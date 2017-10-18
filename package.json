@@ -1,0 +1,43 @@
+{
+  "name": "jamr",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tarekgabarin/jamrBackend.git"
+  },
+  "author": "Tarek Gabarin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tarekgabarin/jamrBackend/issues"
+  },
+  "homepage": "https://github.com/tarekgabarin/jamrBackend#readme",
+  "dependencies": {
+    "aws-sdk": "^2.130.0",
+    "axios": "^0.16.2",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.2",
+    "cheerio": "^1.0.0-rc.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.1",
+    "express-session": "^1.15.6",
+    "jsonwebtoken": "^8.0.1",
+    "lodash": "^4.17.4",
+    "mongodb": "^2.2.31",
+    "mongoose": "^4.12.0",
+    "mongoose-timestamp": "^0.6.0",
+    "morgan": "^1.9.0",
+    "multer": "^1.3.0",
+    "multer-s3": "^2.7.0",
+    "passport": "^0.4.0",
+    "passport-jwt": "^3.0.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^4.2.1",
+    "request": "^2.83.0",
+    "validator": "^9.0.0"
+  }
+}

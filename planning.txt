@@ -1,0 +1,35 @@
+There should be two collections
+
+The first collection is the User, and the second should be conversations held by two users.
+
+Each Conversation document holds an array called participants, that contains an objecy objects with the following structure
+
+ [
+    adam : {
+
+            <document id>
+
+            <creation date>
+
+                }
+
+    betty: {
+
+           <document id>
+
+           <creation date>
+
+
+        }
+
+    ]
+
+
+    It is important to note that the array has to be sorted alphabetically, meaning the person whose name is alphabetically
+    first is placed first int the array.
+
+
+    When a  person first messages someone
+
+        - A conversationDocument is made. A new creationDate is assigned to the conversationDocument, which is stored in
+        conversationHistories.
