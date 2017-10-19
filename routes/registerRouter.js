@@ -2,8 +2,10 @@ const bcrypt = require('bcryptjs');
 const authentication = require('../controllers/authentication');
 const express = require('express');
 const passport = require('passport');
-const passportService =require('../services/passport');
-const config = require('../config/config');
+const passportService = require('../services/passport');
+
+
+const config = require('../config/config.js');
 
 const axios = require('axios');
 
@@ -16,21 +18,7 @@ mongoose.Promise = Promise;
 const generateToken = require('../controllers/generateToken');
 
 
-
 const User = require('../models/user');
-
-const request = require('request');
-
-
-function generateUserToken(user){
-
-
-    return jwt.sign({id: user._id, creationDate: user.creationDate, username: user.username, profilePic: user.profilePic}, config.secretKey);
-
-
-
-}
-
 
 router.post('/', (req, res, next) => {
 
@@ -62,14 +50,9 @@ router.post('/', (req, res, next) => {
     let getSrc = () => {
 
 
-
-
-
         return axios.get(address)
-            .then( (response) => {
+            .then((response) => {
                 return response.data.results[0].geometry;
-
-
 
 
             })
@@ -81,24 +64,29 @@ router.post('/', (req, res, next) => {
     };
 
 
-    getSrc().then((response)=>{
+    getSrc().then((response) => {
         console.log('lat lat lat: ', response.location);
 
         User.findOne({email: req.body.email})
 
             .then((user) => {
 
-                if (!user){
+                if (!user) {
 
                     let password = req.body.password;
 
-                    bcrypt.genSalt(10, function(err, salt){
+                    bcrypt.genSalt(10, function (err, salt) {
 
                         if (err) throw err;
 
-                        bcrypt.hash(password, salt, function(err, hash){
+                        bcrypt.hash(password, salt, function (err, hash) {
 
                             if (err) throw err;
+
+
+                            let userName = `${req.body.firstName}_${req.body.lastName}`;
+
+                            console.log(userName);
 
 
                             User.create({
@@ -117,11 +105,21 @@ router.post('/', (req, res, next) => {
 
                                 age: req.body.age,
 
-                                myLocation: [response.location.lng, response.location.lat],
+                                username: userName,
 
-                                city: req.body.city,
 
-                                country: req.body.country,
+                                //// myLocation: [response.location.lng, response.location.lat],
+
+                                loc: {
+                                    type: 'Point',
+                                    coordinates: [response.location.lng, response.location.lat]
+                                },
+
+                                city: city,
+
+                                country: country,
+
+                                street: street,
 
                                 provinceState: req.body.provinceState,
 
@@ -143,37 +141,24 @@ router.post('/', (req, res, next) => {
                                 .then((user) => {
 
 
-                                let userToken = generateToken.generateUserToken(user);
+                                    let userToken = generateToken.generateUserToken(user);
 
 
-                                res.header('x-auth', userToken).send(userToken);
+                                    res.header('x-auth', userToken).send(userToken);
 
-
-
+                                    res.json(user);
 
 
                                 })
 
 
-
-
                         })
-
-
-
 
 
                     })
 
 
-
-
-
-
-
                 }
-
-
 
 
             })
@@ -181,21 +166,8 @@ router.post('/', (req, res, next) => {
 
 
 
-       ///res.send(response.location);
-
-
-
-
 
     });
-
-
-
-
-
-
-
-
 
 
 });

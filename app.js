@@ -12,6 +12,8 @@ const registerRouter = require('./routes/registerRouter');
 
 const loginRouter = require('./routes/loginRouter');
 
+const findUsersRouter = require('./routes/findUsersRouter');
+
 let cors = require('cors');
 
 const app = express();
@@ -39,6 +41,10 @@ app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
 app.use('/register', registerRouter);
 
 app.use('/login', loginRouter);
+
+app.use('/find', findUsersRouter);
+
+
 
 const port = process.env.PORT || 3000;
 const server = http.createServer(app);

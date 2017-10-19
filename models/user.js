@@ -8,6 +8,8 @@ const passport = require('passport');
 
 
 
+
+
 const Schema = mongoose.Schema;
 
 
@@ -31,6 +33,15 @@ let User = new Schema({
 
         type: String,
         required: true
+
+
+    },
+
+    username: {
+
+        type: String,
+
+        default: 'BLANK'
 
 
     },
@@ -77,7 +88,7 @@ let User = new Schema({
 
     },
 
-    geometry: {
+    loc: {
 
         type: {
             type: String,
@@ -86,6 +97,7 @@ let User = new Schema({
         },
 
         coordinates: [Number]
+
 
 
 
@@ -244,6 +256,8 @@ let User = new Schema({
     }
 
 });
+
+////User.index({ "loc": "2dsphere" });
 
 User.methods.passwordComparison = function(candidate, callback){
     bcrypt.compare(candidate, this.password, function(err, doesMatch){

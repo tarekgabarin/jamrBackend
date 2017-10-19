@@ -3,8 +3,10 @@ const User = require('../models/user');
 const config = require('../config/config.js');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
-const LocalStrategy = require('passport-local');
+const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
+
+
 
 
 

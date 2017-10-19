@@ -19,9 +19,11 @@ const generateToken = require('../controllers/generateToken');
 
 router.post('/', passport.authenticate('localLogin', {session: false}), (req, res, err) => {
 
-    if (err) throw err;
+    if (err) console.log(err);
 
     let userToken = generateToken.generateUserToken(req.user);
+
+    console.log('req.user is...' + req.user);
 
     res.header('x-auth', userToken).send(userToken);
 
