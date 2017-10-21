@@ -18,6 +18,8 @@ const findUsersRouter = require('./routes/findUsersRouter');
 
 const viewUserRouter = require('./routes/viewUserRouter');
 
+const blockUserRouter = require('./routes/blockUserRouter');
+
 let cors = require('cors');
 
 const app = express();
@@ -43,6 +45,8 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
 
 app.use('/message', messageRouter);
+
+app.use('/block', blockUserRouter);
 
 app.use('/user', viewUserRouter);
 
