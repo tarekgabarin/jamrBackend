@@ -25,24 +25,6 @@ function alphaOrder(arr) {
 
 }
 
-/*
-
-1. Use req.decoded to get the User via findOne
-
-
-    2. When Self is there, loop through conversation histories to see if Other is there.
-
-    3.
-
-        If ( Other is in conversation histories ) {
-
-            4. Find Other using req.params (username) and respondentCD. And also combine respondentCD and the self's cd to
-            get the conversationCD that your conversation has
-
-        }
-
-
- */
 
 router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) => {
 
@@ -69,23 +51,23 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
 
             let selfObj = {
 
-                    creationDate: selfCD,
+                creationDate: selfCD,
 
-                    userId: selfId,
+                userId: selfId,
 
-                    username: self.username
+                username: self.username
 
-                };
+            };
 
             let otherObj = {
-                        creationDate: otherCD,
+                creationDate: otherCD,
 
-                        userId: otherId,
+                userId: otherId,
 
-                        username: other.username
+                username: other.username
 
 
-                    };
+            };
 
             conversationData.push(selfObj);
 
@@ -98,7 +80,7 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
             console.log('conversationData is..' + conversationData);
 
             Conversation.findOne({
-              //  participants: conversationData,
+                //  participants: conversationData,
                 usersNames: usersNamesArray,
                 conversationCD: conversationCD
             }).then((conversation) => {
@@ -108,7 +90,6 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
 
 
                     Conversation.create({
-
 
 
                         conversationCD: conversationCD,
@@ -143,8 +124,6 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
                                 dateOfMessage: currentDate
 
                             }).then((message) => {
-
-
 
 
                                 let newEntryForSelf = {
@@ -223,19 +202,39 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
 
                     }).then((message) => {
 
-                        
+                        // self.update({'conversationId': message.conversationId}, {
+                        //
+                        //
+                        //     '$set': {
+                        //
+                        //
+                        //         'conversationHistories.$.timeSent': now,
+                        //
+                        //         'conversationHistories.$.dateSent': currentDate,
+                        //
+                        //         'conversationHistories.$.latestMessage': String(req.body.message)
+                        //
+                        //
+                        //     }
+                        //
+                        //
+                        // });
 
-                        self.update({'conversationHistories.conversationId': message.conversationId}, {
+
+                        /// TODO why the F*&$# isn't this working? Deal with this bullshit later
 
 
-                            '$set': {
+                        User.update({'conversationHistories.conversationId': message.conversationId}, {
+
+
+                            $set: {
 
 
                                 'conversationHistories.$.timeSent': now,
 
                                 'conversationHistories.$.dateSent': currentDate,
 
-                                'conversationHistories.$.latestMessage': req.body.message
+                                'conversationHistories.$.latestMessage': String(req.body.message)
 
 
                             }
@@ -243,27 +242,29 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
 
                         });
 
-                        self.save();
+                        ///    User.save();
 
-                        other.update({'conversationHistories.conversationId': message.conversationId}, {
+                        ///      self.save();
 
-
-                            '$set': {
-
-
-                                'conversationHistories.$.timeSent': now,
-
-                                'conversationHistories.$.dateSent': currentDate,
-
-                                'conversationHistories.$.latestMessage': req.body.message
-
-
-                            }
-
-
-                        });
-
-                        other.save();
+                        // other.update({'conversationHistories.conversationId': message.conversationId}, {
+                        //
+                        //
+                        //     '$set': {
+                        //
+                        //
+                        //         'conversationHistories.$.timeSent': now,
+                        //
+                        //         'conversationHistories.$.dateSent': currentDate,
+                        //
+                        //         'conversationHistories.$.latestMessage': String(req.body.message)
+                        //
+                        //
+                        //     }
+                        //
+                        //
+                        // });
+                        //
+                        // other.save();
 
                         res.json(message);
 
@@ -285,8 +286,63 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
 
 });
 
+router.get('/:username', authentication.verifyOrdinaryUser, (req, res, next) => {
+
+    User.findById(req.decoded.id).then((self) => {
+
+        User.findOne({username: req.params.username}).then((other) => {
+
+            let checkConversationHistory = () => {
 
 
+
+                let conversationCD = (self.creationDate + other.creationDate) % 12
+
+
+                let dataObj = {};
+
+                return new Promise((resolve, reject) => {
+
+
+                    for (let i = 0; i < self.conversationHistories.length; i++) {
+
+                        if (self.conversationHistories[i].respondentId === String(other._id)) {
+                            dataObj.conversationId = self.conversationHistories[i].conversationId;
+                            dataObj.conversationCD = conversationCD;
+                            resolve(dataObj);
+
+                        }
+
+
+                    }
+
+
+                })
+
+            };
+
+            checkConversationHistory().then((dataObj) => {
+
+
+                Message.find({conversationId: dataObj.conversationId, conversationCD: dataObj.conversationCD})
+
+                    .then((messages) => {
+
+                    
+
+                        res.json(messages);
+
+                    })
+
+
+            });
+
+        });
+
+
+    });
+
+});
 
 
 module.exports = router;

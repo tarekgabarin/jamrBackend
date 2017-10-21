@@ -103,6 +103,10 @@ let User = new Schema({
 
     },
 
+    blockedUsers: [],
+
+    blockedBy: [],
+
 
     conversationHistories: [{
 
