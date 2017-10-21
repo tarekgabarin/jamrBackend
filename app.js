@@ -8,6 +8,8 @@ let mongoose = require('mongoose');
 let config = require('./config/config');
 let bodyParser = require('body-parser');
 
+const messageRouter = require('./routes/messageRouter');
+
 const registerRouter = require('./routes/registerRouter');
 
 const loginRouter = require('./routes/loginRouter');
@@ -37,6 +39,8 @@ app.options('*', cors());
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
+
+app.use('/message', messageRouter);
 
 app.use('/register', registerRouter);
 

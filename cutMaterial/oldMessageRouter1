@@ -1,0 +1,498 @@
+router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) => {
+
+    User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate}).then((self) => {
+
+        let haveNotMessagedBefore = true;
+
+        function inspectHistory(){
+
+            return new Promise((resolve, reject) => {
+
+                for (var i = 0; i < self.conversationHistories.length; i++){
+
+                    if (self.conversationHistories[i].respondent === String(req.param.username)){
+
+                        haveNotMessagedBefore = false;
+
+                    }
+                }
+
+
+                if (i === self.conversationHistories.length){
+
+                    resolve(haveNotMessagedBefore);
+
+                }
+
+            })
+
+
+
+
+
+        }
+
+
+        // for (let i = 0; i < self.conversationHistories.length; i++){
+        //
+        //     if (self.conversationHistories[i].respondent === String(req.param.username)){
+        //
+        //         haveNotMessagedBefore = false;
+        //
+        //     }
+        // }
+
+        inspectHistory().then((haveNotMessagedBefore) => {
+
+            // console.log('Running inspectHistory.then callback');
+            //
+            // console.log('self is...' + self);
+            //
+            // console.log('req.decoded is..' + req.decoded);
+            //
+            // console.log('haveNotMessagedBefore is....' + haveNotMessagedBefore);
+
+
+
+            if (haveNotMessagedBefore){
+
+                User.findOne({username: req.params.username}).then((other) => {
+
+                    let selfCD = self.creationDate;
+
+                    let OtherCD = other.creationDate;
+
+                    let conversationCD = (selfCD + OtherCD) % 12;
+
+                    let currentDate = moment().format('LL');
+
+
+
+
+
+
+
+
+
+
+                })
+
+            }
+
+
+
+
+
+
+        });
+
+
+
+
+
+
+    });
+
+
+
+
+});
+
+
+
+/////// This is the new apporach so far. This is the version where I divided conversation documents into days, but now
+/// I decided not to
+
+router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) => {
+
+    User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate}).then((self) => {
+
+
+        User.findOne({username: req.params.username}).then((other) => {
+
+            let selfCD = self.creationDate;
+
+            let otherCD = other.creationDate;
+
+            let conversationCD = (selfCD + otherCD) % 12;
+
+            let currentDate = moment().format('LL');
+
+            let conversationData = [{
+
+                creationDate: selfCD,
+
+                userId: self._id,
+
+                username: self.username
+
+            },
+                {
+                    creationDate: otherCD,
+
+                    userID: other._id,
+
+                    username: other.username
+
+
+
+
+
+                }
+
+
+            ];
+
+            conversationData = alphaOrder(conversationData);
+
+            Conversation.findOne({participants: conversationData, dateOfConversation: currentDate, conversationCD: conversationCD}).then((conversation) => {
+
+
+                // console.log("Is working?");
+                //
+                // console.log('selfCD is...' + selfCD);
+                //
+                // console.log('otherCD is...' + otherCD);
+                //
+                // console.log('conversationCD is...' + conversationCD);
+                //
+                // console.log('currentDate is...' + currentDate);
+                //
+                // console.log('conversationData is....' + conversationData);
+
+
+
+                   if (!conversation){
+
+
+                       Conversation.create({
+
+                           dateOfConversation: currentDate,
+
+                           conversationCD: conversationCD,
+
+                           participants: conversationData
+
+
+                       })
+
+                           .then((newConversation) => {
+
+                           let now = moment().format('LTS');
+
+                            Message.create({
+
+                                conversationId: newConversation._id,
+
+                                conversationCD: conversationCD,
+
+                                participants: conversationData,
+
+                                sentBy: self._id,
+
+                                sentTo: other._id,
+
+                                messageSent: req.body.message,
+
+                                sentAt: now,
+
+                                dateOfMessage: currentDate
+
+                            }).then((message) => {
+
+                                //// Add a new entry into self and others conversationHistories array
+
+
+                                let newEntryForSelf = {
+
+                                    conversationId: message.conversationId,
+
+                                    respondentId: other._id,
+
+                                    respondentCD: otherCD,
+
+                                    latestMessage: message.messageSent
+
+                                };
+
+                                let newEntryForOther = {
+
+                                  con
+
+
+                                }
+
+
+
+                            })
+
+
+
+                           })
+
+
+
+              }
+
+
+            })
+
+
+
+
+        })
+
+
+    });
+
+
+});
+
+
+module.exports = router;
+
+
+
+//////////// It's getting better, I just need to fix the problem with conversationData
+
+router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) => {
+
+    /// TODO I need to make sure that two messages have the same conversationId and that two conversationIds are not created
+
+    User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate}).then((self) => {
+
+
+        User.findOne({username: req.params.username}).then((other) => {
+
+            let selfCD = self.creationDate;
+
+            let otherCD = other.creationDate;
+
+            let conversationCD = (selfCD + otherCD) % 12;
+
+            let currentDate = moment().format('LL');
+
+            /// TODO for some odd reason , userId is not showing for other._id in the conversation object
+
+            ///TODO the root cause of this problem is that there is no consistency in how conversationData is constructed
+            //TODO the program is creating conversationData twice that are different from ont another
+
+            let conversationData = [{
+
+                creationDate: selfCD,
+
+                userId: self._id,
+
+                username: self.username
+
+            },
+                {
+                    creationDate: otherCD,
+
+                    userID: other._id,
+
+                    username: other.username
+
+
+                }];
+
+            conversationData = alphaOrder(conversationData);
+
+            console.log('conversationData is..' + conversationData);
+
+            Conversation.findOne({
+                participants: conversationData,
+                conversationCD: conversationCD
+            }).then((conversation) => {
+
+
+                // console.log("Is working?");
+                //
+                // console.log('selfCD is...' + selfCD);
+                //
+                // console.log('otherCD is...' + otherCD);
+                //
+                // console.log('conversationCD is...' + conversationCD);
+                //
+                // console.log('currentDate is...' + currentDate);
+                //
+                // console.log('conversationData is....' + conversationData);
+
+
+                if (!conversation) {
+
+
+                    Conversation.create({
+
+                        ///    dateOfConversation: currentDate,
+
+                        conversationCD: conversationCD,
+
+                        participants: conversationData
+
+
+                    })
+
+                        .then((newConversation) => {
+
+                            let now = moment().format('LTS');
+
+                            Message.create({
+
+                                conversationId: newConversation._id,
+
+                                conversationCD: conversationCD,
+
+                                participants: conversationData,
+
+                                sentBy: self._id,
+
+                                sentTo: other._id,
+
+                                messageSent: req.body.message,
+
+                                sentAt: now,
+
+                                dateOfMessage: currentDate
+
+                            }).then((message) => {
+
+                                //// Add a new entry into self and others conversationHistories array
+
+
+                                let newEntryForSelf = {
+
+                                    conversationId: message.conversationId,
+
+                                    respondentId: other._id,
+
+                                    respondentCD: otherCD,
+
+                                    latestMessage: message.messageSent,
+
+                                    timeSent: now,
+
+                                    dateSent: currentDate
+
+                                };
+
+                                let newEntryForOther = {
+
+                                    conversationId: message.conversationId,
+
+                                    respondentId: self._id,
+
+                                    respondentCD: selfCD,
+
+                                    latestMessage: message.messageSent,
+
+                                    timeSent: now,
+
+                                    dateSent: currentDate
+
+
+                                };
+
+                                self.conversationHistories.push(newEntryForSelf);
+
+                                self.save();
+
+                                other.conversationHistories.push(newEntryForOther);
+
+                                other.save();
+
+
+                            })
+
+
+                        })
+
+
+                }
+
+                else {
+
+                    let now = moment().format('LTS');
+
+                    Message.create({
+
+                        conversationId: conversation._id,
+
+                        conversationCD: conversationCD,
+
+                        participants: conversationData,
+
+                        sentBy: self._id,
+
+                        sentTo: other._id,
+
+                        messageSent: req.body.message,
+
+                        sentAt: now,
+
+                        dateOfMessage: currentDate
+
+                    }).then((message) => {
+
+                        // for (let i = 0; i < self.conversationHistories.length; i++){}
+
+                        self.update({'conversationHistories.conversationId': message.conversationId}, {
+
+
+                            '$set': {
+
+
+                                'conversationHistories.$.timeSent': now,
+
+                                'conversationHistories.$.dateSent': currentDate,
+
+                                'conversationHistories.$.latestMessage': req.body.message
+
+
+                            }
+
+
+                        });
+
+                        self.save();
+
+                        other.update({'conversationHistories.conversationId': message.conversationId}, {
+
+
+                            '$set': {
+
+
+                                'conversationHistories.$.timeSent': now,
+
+                                'conversationHistories.$.dateSent': currentDate,
+
+                                'conversationHistories.$.latestMessage': req.body.message
+
+
+                            }
+
+
+                        });
+
+                        other.save();
+
+
+                    })
+
+
+                }
+
+
+            })
+
+
+        })
+
+
+    });
+
+
+});
+
+
+module.exports = router;

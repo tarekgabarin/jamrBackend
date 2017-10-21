@@ -8,12 +8,48 @@ let messageSchema  = new Schema();
 
 messageSchema.add({
 
+    conversationId: {
+
+        type: String
+
+    },
+
+    conversationCD: {
+
+        type: Number,
+        index: true
+
+    },
+
+    participants: [{
+
+        creationDate: {
+            type: Number
+        },
+
+        userId: {
+            type: String
+
+        },
+
+        username: {
+
+            type: String,
+
+        }
+
+    }],
+
     sentBy: {
         type: String
 
     },
 
+    sentTo: {
 
+        type: String
+
+    },
 
     messageSent: {
 
@@ -25,6 +61,12 @@ messageSchema.add({
 
         type: String,
         default: new Date()
+    },
+
+    dateOfMessage: {
+
+        type: String
+
     }
 
 
@@ -32,3 +74,7 @@ messageSchema.add({
 
 
 });
+
+let Message = mongoose.model('Message', messageSchema);
+
+module.exports = Message;

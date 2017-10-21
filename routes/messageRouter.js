@@ -1,0 +1,292 @@
+const authentication = require('../controllers/authentication');
+const express = require('express');
+const router = express.Router();
+const mongodb = require('mongodb');
+const mongoose = require('mongoose');
+mongoose.Promise = Promise;
+const User = require('../models/user');
+const Conversation = require('../models/conversation');
+
+const Message = require('../models/message');
+
+const moment = require('moment');
+
+
+function alphaOrder(arr) {
+
+    //// rearranges the order of objects in array by alphabetical order
+
+
+    return arr.sort((a, b) => {
+
+        return a.username.toLowerCase().localeCompare(b.username.toLowerCase())
+
+    });
+
+}
+
+/*
+
+1. Use req.decoded to get the User via findOne
+
+
+    2. When Self is there, loop through conversation histories to see if Other is there.
+
+    3.
+
+        If ( Other is in conversation histories ) {
+
+            4. Find Other using req.params (username) and respondentCD. And also combine respondentCD and the self's cd to
+            get the conversationCD that your conversation has
+
+        }
+
+
+ */
+
+router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) => {
+
+    /// TODO I need to make sure that two messages have the same conversationId and that two conversationIds are not created
+
+    User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate}).then((self) => {
+
+
+        User.findOne({username: req.params.username}).then((other) => {
+
+            let selfCD = self.creationDate;
+
+            let otherCD = other.creationDate;
+
+            let selfId = String(self._id);
+
+            let otherId = String(other._id);
+
+            let conversationCD = (selfCD + otherCD) % 12;
+
+            let currentDate = moment().format('LL');
+
+            let conversationData = [];
+
+            let selfObj = {
+
+                    creationDate: selfCD,
+
+                    userId: selfId,
+
+                    username: self.username
+
+                };
+
+            let otherObj = {
+                        creationDate: otherCD,
+
+                        userId: otherId,
+
+                        username: other.username
+
+
+                    };
+
+            conversationData.push(selfObj);
+
+            conversationData.push(otherObj);
+
+            let usersNamesArray = [self.username, other.username].sort();
+
+            conversationData = alphaOrder(conversationData);
+
+            console.log('conversationData is..' + conversationData);
+
+            Conversation.findOne({
+              //  participants: conversationData,
+                usersNames: usersNamesArray,
+                conversationCD: conversationCD
+            }).then((conversation) => {
+
+
+                if (!conversation) {
+
+
+                    Conversation.create({
+
+
+
+                        conversationCD: conversationCD,
+
+                        participants: conversationData,
+
+                        usersNames: usersNamesArray
+
+
+                    })
+
+                        .then((newConversation) => {
+
+                            let now = moment().format('LTS');
+
+                            Message.create({
+
+                                conversationId: newConversation._id,
+
+                                conversationCD: conversationCD,
+
+                                participants: conversationData,
+
+                                sentBy: self._id,
+
+                                sentTo: other._id,
+
+                                messageSent: req.body.message,
+
+                                sentAt: now,
+
+                                dateOfMessage: currentDate
+
+                            }).then((message) => {
+
+
+
+
+                                let newEntryForSelf = {
+
+                                    conversationId: message.conversationId,
+
+                                    respondentId: other._id,
+
+                                    respondentCD: otherCD,
+
+                                    latestMessage: message.messageSent,
+
+                                    timeSent: now,
+
+                                    dateSent: currentDate
+
+                                };
+
+                                let newEntryForOther = {
+
+                                    conversationId: message.conversationId,
+
+                                    respondentId: self._id,
+
+                                    respondentCD: selfCD,
+
+                                    latestMessage: message.messageSent,
+
+                                    timeSent: now,
+
+                                    dateSent: currentDate
+
+
+                                };
+
+                                self.conversationHistories.push(newEntryForSelf);
+
+                                self.save();
+
+                                other.conversationHistories.push(newEntryForOther);
+
+                                other.save();
+
+                                res.json(message);
+
+
+                            })
+
+
+                        })
+
+
+                }
+
+                else {
+
+                    let now = moment().format('LTS');
+
+                    Message.create({
+
+                        conversationId: conversation._id,
+
+                        conversationCD: conversationCD,
+
+                        participants: conversationData,
+
+                        sentBy: self._id,
+
+                        sentTo: other._id,
+
+                        messageSent: req.body.message,
+
+                        sentAt: now,
+
+                        dateOfMessage: currentDate
+
+                    }).then((message) => {
+
+                        
+
+                        self.update({'conversationHistories.conversationId': message.conversationId}, {
+
+
+                            '$set': {
+
+
+                                'conversationHistories.$.timeSent': now,
+
+                                'conversationHistories.$.dateSent': currentDate,
+
+                                'conversationHistories.$.latestMessage': req.body.message
+
+
+                            }
+
+
+                        });
+
+                        self.save();
+
+                        other.update({'conversationHistories.conversationId': message.conversationId}, {
+
+
+                            '$set': {
+
+
+                                'conversationHistories.$.timeSent': now,
+
+                                'conversationHistories.$.dateSent': currentDate,
+
+                                'conversationHistories.$.latestMessage': req.body.message
+
+
+                            }
+
+
+                        });
+
+                        other.save();
+
+                        res.json(message);
+
+
+                    })
+
+
+                }
+
+
+            })
+
+
+        })
+
+
+    });
+
+
+});
+
+
+
+
+
+module.exports = router;

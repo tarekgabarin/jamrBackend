@@ -113,7 +113,7 @@ let User = new Schema({
 
         },
 
-        respondent: {
+        respondentId: {
 
             type: String,
             required: true
@@ -132,6 +132,21 @@ let User = new Schema({
 
           type: String,
           required: true
+        },
+
+        timeSent: {
+
+            type: String,
+            required: true
+
+        },
+
+        dateSent: {
+
+            type: String,
+
+            required: true
+
         }
 
 

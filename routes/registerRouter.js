@@ -52,6 +52,7 @@ router.post('/', (req, res, next) => {
 
         return axios.get(address)
             .then((response) => {
+                console.log('address is..' + address);
                 return response.data.results[0].geometry;
 
 
