@@ -16,6 +16,8 @@ const loginRouter = require('./routes/loginRouter');
 
 const findUsersRouter = require('./routes/findUsersRouter');
 
+const viewUserRouter = require('./routes/viewUserRouter');
+
 let cors = require('cors');
 
 const app = express();
@@ -41,6 +43,8 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
 
 app.use('/message', messageRouter);
+
+app.use('/user', viewUserRouter);
 
 app.use('/register', registerRouter);
 

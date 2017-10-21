@@ -328,7 +328,7 @@ router.get('/:username', authentication.verifyOrdinaryUser, (req, res, next) => 
 
                     .then((messages) => {
 
-                    
+
 
                         res.json(messages);
 

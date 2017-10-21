@@ -52,4 +52,9 @@ router.get('/', authentication.verifyOrdinaryUser, (req, res, next) => {
 
 });
 
+//// This is for the user to view another users profile
+
+
+
+
 module.exports = router;
