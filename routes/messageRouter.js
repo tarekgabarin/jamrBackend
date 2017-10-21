@@ -35,6 +35,12 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
 
         User.findOne({username: req.params.username}).then((other) => {
 
+            let selfBlockedList = self.blockedUsers;
+
+            let otherBlockedByList = other.blockedBy;
+
+            if (selfBlockedList.indexOf(String(other._id)) !== -1 && otherBlockedByList.indexOf(String(self._id)) !== -1) {
+
             let selfCD = self.creationDate;
 
             let otherCD = other.creationDate;
@@ -276,6 +282,14 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
 
 
             })
+
+        }
+
+        else {
+
+                res.send('User has blocked you');
+
+            }
 
 
         })
