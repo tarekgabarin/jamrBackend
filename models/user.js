@@ -240,7 +240,7 @@ let User = new Schema({
 
     iWantToMake: {
 
-        type: String,
+        type: Array,
         required: true
 
 
@@ -274,6 +274,34 @@ let User = new Schema({
 
         type: String,
         required: true
+
+
+    },
+
+    discoveryPreferences: {
+
+        gender: {
+
+            type: Array
+
+        },
+
+        lowestAge: {
+
+            type: Number
+
+        },
+
+        highestAge: {
+
+            type: Number
+
+        },
+
+        miles: {
+
+            type: Number
+        }
 
 
     }

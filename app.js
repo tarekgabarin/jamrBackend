@@ -30,6 +30,10 @@ const checkOutLaterRouter = require('./routes/checkOutLaterRouter');
 
 const checkOutSavedRouter = require('./routes/checkOutSavedRouter');
 
+const setDiscoveryPreferences = require('./routes/setDiscoveryPreferences');
+
+const discoverRouter = require('./routes/discoveryRouter');
+
 
 
 let cors = require('cors');
@@ -71,6 +75,10 @@ app.use('/user', viewUserRouter);
 app.use('/checkOutLater', checkOutLaterRouter);
 
 app.use('/checkOutSaved', checkOutSavedRouter);
+
+app.use('/setPreferences', setDiscoveryPreferences);
+
+app.use('/discover', discoverRouter);
 
 app.use('/register', registerRouter);
 

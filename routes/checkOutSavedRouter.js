@@ -10,7 +10,6 @@ const mongodb = require('mongodb');
 const mongoose = require('mongoose');
 
 
-
 router.get('/', authentication.verifyOrdinaryUser, (req, res, next) => {
 
     User.findOne({_id: req.decoded.id, creationDate: req.decoded.creationDate}).then((self) => {
