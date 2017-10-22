@@ -252,6 +252,20 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
 
                             let otherHistories = other.conversationHistories;
 
+                            let selfCheckOut = [];
+
+                            let otherCheckOut = [];
+
+                            for (let i = 0; i < self.checkOutLater.length; i++){
+
+                                if (self.checkOutLater[i] !== String(other._id)){
+
+                                    selfCheckOut.push(self.checkOutLater[i]);
+
+                                }
+
+                            }
+
                             for (let i = 0; i < selfHistories.length; i++) {
 
                                 if (selfHistories[i].conversationId === message.conversationId) {
@@ -266,6 +280,8 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
                             }
 
                             self.set('conversationHistories', selfHistories);
+
+                            self.set('checkOutLater', selfCheckOut);
 
                             self.save();
 
@@ -282,7 +298,19 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
 
                             }
 
+                            for (let i = 0; i < other.checkOutLater.length; i++){
+
+                                if (other.checkOutLater[i] !== String(self._id)){
+
+                                    otherCheckOut.push(other.checkOutLater[i]);
+
+                                }
+
+                            }
+
                             other.set('conversationHistories', otherHistories);
+
+                            other.set('checkOutLater', otherCheckOut);
 
                             other.save();
 
