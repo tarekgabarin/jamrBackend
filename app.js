@@ -20,6 +20,8 @@ const viewUserRouter = require('./routes/viewUserRouter');
 
 const blockUserRouter = require('./routes/blockUserRouter');
 
+const unblockRouter = require('./routes/unblockRouter');
+
 let cors = require('cors');
 
 const app = express();
@@ -47,6 +49,8 @@ app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
 app.use('/message', messageRouter);
 
 app.use('/block', blockUserRouter);
+
+app.use('/unblock', unblockRouter);
 
 app.use('/user', viewUserRouter);
 

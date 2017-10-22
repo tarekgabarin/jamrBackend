@@ -30,16 +30,22 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
 
     /// TODO I need to make sure that two messages have the same conversationId and that two conversationIds are not created
 
+    // TODO delete every document, then retest this
+
     User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate}).then((self) => {
 
 
         User.findOne({username: req.params.username}).then((other) => {
 
-            let selfBlockedList = self.blockedUsers;
+            let selfBlockedList = self.blockedBy;
 
-            let otherBlockedByList = other.blockedBy;
+            let otherBlockedByList = other.blockedUsers;
 
-            if (selfBlockedList.indexOf(String(other._id)) !== -1 && otherBlockedByList.indexOf(String(self._id)) !== -1) {
+            console.log('selfBlockedList is....' + selfBlockedList);
+
+            console.log('otherBockedByList is...' + otherBlockedByList);
+
+            if ((selfBlockedList.indexOf(String(other._id)) === -1) && (otherBlockedByList.indexOf(String(self._id)) === -1)) {
 
             let selfCD = self.creationDate;
 
@@ -285,7 +291,7 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
 
         }
 
-        else {
+        else if ((selfBlockedList.indexOf(String(other._id)) !== -1) && (otherBlockedByList.indexOf(String(self._id)) !== -1)) {
 
                 res.send('User has blocked you');
 
