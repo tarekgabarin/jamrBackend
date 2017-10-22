@@ -235,24 +235,77 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
 
                         /// TODO why the F*&$# isn't this working? Deal with this bullshit later
 
-
-                        User.update({'conversationHistories.conversationId': message.conversationId}, {
-
-
-                            $set: {
+                        /// THIS ONE WAS SUPPOSED TO BE THE MOST EFFICIENT WHY IT SUCK THO????
 
 
-                                'conversationHistories.$.timeSent': now,
+                        // let changeHistories = () => {
+                        //
+                        //     let selfHistories = self.conversationHistories;
+                        //
+                        //
+                        //
+                        //
+                        // };
 
-                                'conversationHistories.$.dateSent': currentDate,
 
-                                'conversationHistories.$.latestMessage': String(req.body.message)
+                        let selfHistories = self.conversationHistories;
 
+                        let otherHistories = other.conversationHistories;
 
+                        for (let i = 0; i < selfHistories.length; i++){
+
+                            if (selfHistories[i].conversationId === message.conversationId){
+
+                                selfHistories[i].timeSent = now;
+
+                                selfHistories[i].dateSent = currentDate;
+
+                                selfHistories[i].latestMessage = String(req.body.message);
                             }
 
+                        }
 
-                        });
+                        self.set('conversationHistories', selfHistories);
+
+                        self.save();
+
+                        for (let i = 0; i < otherHistories.length; i++){
+
+                            if (otherHistories[i].conversationId === message.conversationId){
+
+                                otherHistories[i].timeSent = now;
+
+                                otherHistories[i].dateSent = currentDate;
+
+                                otherHistories[i].latestMessage = String(req.body.message);
+                            }
+
+                        }
+
+                        other.set('conversationHistories', otherHistories);
+
+                        other.save();
+
+
+
+
+                        // User.update({'conversationHistories.conversationId': message.conversationId}, {
+                        //
+                        //
+                        //     $set: {
+                        //
+                        //
+                        //         'conversationHistories.$.timeSent': now,
+                        //
+                        //         'conversationHistories.$.dateSent': currentDate,
+                        //
+                        //         'conversationHistories.$.latestMessage': String(req.body.message)
+                        //
+                        //
+                        //     }
+                        //
+                        //
+                        // });
 
                         ///    User.save();
 
