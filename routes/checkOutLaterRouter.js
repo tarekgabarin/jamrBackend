@@ -17,7 +17,7 @@ router.post('/:userId', authentication.verifyOrdinaryUser, (req, res, next) => {
 
        User.findOne({_id: req.params.userId}).then((other) => {
 
-           self.checkOutLater.addToSet({id: other._id, creationDate: other.creationDate});
+           self.checkOutLater.addToSet(String(other._id));
 
            self.save();
 
@@ -28,5 +28,7 @@ router.post('/:userId', authentication.verifyOrdinaryUser, (req, res, next) => {
    })
 
 });
+
+
 
 module.exports = router;

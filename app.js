@@ -28,6 +28,8 @@ const notInterestedRouter = require('./routes/notInterestedRouter');
 
 const checkOutLaterRouter = require('./routes/checkOutLaterRouter');
 
+const checkOutSavedRouter = require('./routes/checkOutSavedRouter');
+
 
 
 let cors = require('cors');
@@ -67,6 +69,8 @@ app.use('/notInterested', notInterestedRouter);
 app.use('/user', viewUserRouter);
 
 app.use('/checkOutLater', checkOutLaterRouter);
+
+app.use('/checkOutSaved', checkOutSavedRouter);
 
 app.use('/register', registerRouter);
 
