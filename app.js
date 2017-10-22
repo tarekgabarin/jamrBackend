@@ -10,17 +10,22 @@ let bodyParser = require('body-parser');
 
 const messageRouter = require('./routes/messageRouter');
 
-const registerRouter = require('./routes/registerRouter');
-
-const loginRouter = require('./routes/loginRouter');
-
-const findUsersRouter = require('./routes/findUsersRouter');
-
-const viewUserRouter = require('./routes/viewUserRouter');
-
 const blockUserRouter = require('./routes/blockUserRouter');
 
 const unblockRouter = require('./routes/unblockRouter');
+
+const viewUserRouter = require('./routes/viewUserRouter');
+
+const findSkillRouter = require('./routes/findSkillRouter');
+
+const loginRouter = require('./routes/loginRouter');
+
+const registerRouter = require('./routes/registerRouter');
+
+const findUsersRouter = require('./routes/findUsersRouter');
+
+
+
 
 let cors = require('cors');
 
@@ -51,6 +56,8 @@ app.use('/message', messageRouter);
 app.use('/block', blockUserRouter);
 
 app.use('/unblock', unblockRouter);
+
+app.use('/findBySkill', findSkillRouter);
 
 app.use('/user', viewUserRouter);
 

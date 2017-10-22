@@ -13,13 +13,7 @@ const mongoose = require('mongoose');
 
 
 
-router.get('/', authentication.verifyOrdinaryUser, (req, res, next) => {
-
-
-    ///TODO This works but you don't want the user to also get himelf/herself in the queries
-
-    console.log('req.decoded is...' + req.decoded);
-
+router.post('/', authentication.verifyOrdinaryUser, (req, res, next) => {
 
     User.find({
 
@@ -41,23 +35,21 @@ router.get('/', authentication.verifyOrdinaryUser, (req, res, next) => {
             }
 
 
+        },
+
+        skills: {
+
+            $in: [req.body.skill]
+
+
         }
 
 
     }).then((users) => {
 
-
-        res.json(users);
-
+        res.json(users)
 
     })
-
-
 });
-
-//// This is for the user to view another users profile
-
-
-
 
 module.exports = router;
