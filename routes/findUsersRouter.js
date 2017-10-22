@@ -10,51 +10,57 @@ const mongodb = require('mongodb');
 const mongoose = require('mongoose');
 
 
-
-
-
 router.get('/', authentication.verifyOrdinaryUser, (req, res, next) => {
 
     console.log('req.decoded is...' + req.decoded);
 
+    User.findOne({_id: req.decoded.id, creationDate: req.decoded.creationDate}).then((self) => {
 
-    User.find({
+        let ultimateIgnoreList = self.notInterested.concat(self.blockedUsers);
 
-        loc: {
+        User.find({
 
-            $nearSphere: {
+            loc: {
 
-                $geometry: {
+                $nearSphere: {
+
+                    $geometry: {
 
 
-                    type: "Point",
+                        type: "Point",
 
-                    coordinates: req.decoded.loc.coordinates
+                        coordinates: req.decoded.loc.coordinates
+
+
+                    },
+
+                    $maxDistance: 100000
 
 
                 },
 
-                $maxDistance: 100000
-
 
             },
 
+            username: {
+
+                $ne: req.decoded.username
+
+            },
+
+            _id: {
+
+                $nin: ultimateIgnoreList
+            }
 
 
-
-        },
-
-        username: {
-
-            $ne: req.decoded.username
-
-        }
+        }).then((users) => {
 
 
-    }).then((users) => {
+            res.json(users);
 
 
-        res.json(users);
+        })
 
 
     })
@@ -63,8 +69,6 @@ router.get('/', authentication.verifyOrdinaryUser, (req, res, next) => {
 });
 
 //// This is for the user to view another users profile
-
-
 
 
 module.exports = router;

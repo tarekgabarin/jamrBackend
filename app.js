@@ -24,6 +24,8 @@ const registerRouter = require('./routes/registerRouter');
 
 const findUsersRouter = require('./routes/findUsersRouter');
 
+const notInterestedRouter = require('./routes/notInterestedRouter');
+
 
 
 
@@ -58,6 +60,8 @@ app.use('/block', blockUserRouter);
 app.use('/unblock', unblockRouter);
 
 app.use('/findBySkill', findSkillRouter);
+
+app.use('/notInterested', notInterestedRouter);
 
 app.use('/user', viewUserRouter);
 

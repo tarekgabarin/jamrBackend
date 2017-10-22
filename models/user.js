@@ -107,6 +107,12 @@ let User = new Schema({
 
     blockedBy: [],
 
+    notInterested: [],
+
+    checkOutLater: [],
+
+
+
 
     conversationHistories: [{
 
