@@ -15,9 +15,6 @@ const mongoose = require('mongoose');
 
 router.get('/', authentication.verifyOrdinaryUser, (req, res, next) => {
 
-
-    ///TODO This works but you don't want the user to also get himelf/herself in the queries
-
     console.log('req.decoded is...' + req.decoded);
 
 
@@ -35,11 +32,21 @@ router.get('/', authentication.verifyOrdinaryUser, (req, res, next) => {
                     coordinates: req.decoded.loc.coordinates
 
 
-                }
+                },
+
+                $maxDistance: 100000
 
 
-            }
+            },
 
+
+
+
+        },
+
+        username: {
+
+            $ne: req.decoded.username
 
         }
 

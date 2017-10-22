@@ -42,7 +42,15 @@ router.post('/', authentication.verifyOrdinaryUser, (req, res, next) => {
             $in: [req.body.skill]
 
 
+        },
+
+        username: {
+
+            $ne: req.decoded.username
+
         }
+
+
 
 
     }).then((users) => {
