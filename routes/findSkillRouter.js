@@ -10,9 +10,6 @@ const mongodb = require('mongodb');
 const mongoose = require('mongoose');
 
 
-
-
-
 router.post('/', authentication.verifyOrdinaryUser, (req, res, next) => {
 
     User.find({
@@ -49,8 +46,6 @@ router.post('/', authentication.verifyOrdinaryUser, (req, res, next) => {
             $ne: req.decoded.username
 
         }
-
-
 
 
     }).then((users) => {

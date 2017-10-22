@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const authentication = require('../controllers/authentication');
 const express = require('express');
 const passport = require('passport');
-const passportService =require('../services/passport');
+const passportService = require('../services/passport');
 const config = require('../config/config');
 
 const axios = require('axios');
@@ -16,7 +16,6 @@ mongoose.Promise = Promise;
 const generateToken = require('../controllers/generateToken');
 
 
-
 router.post('/', passport.authenticate('localLogin', {session: false}), (req, res, err) => {
 
     if (err) console.log(err);
@@ -26,7 +25,6 @@ router.post('/', passport.authenticate('localLogin', {session: false}), (req, re
     console.log('req.user is...' + req.user);
 
     res.header('x-auth', userToken).send(userToken);
-
 
 
 });
