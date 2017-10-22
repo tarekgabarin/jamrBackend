@@ -26,6 +26,7 @@ const findUsersRouter = require('./routes/findUsersRouter');
 
 const notInterestedRouter = require('./routes/notInterestedRouter');
 
+const checkOutLaterRouter = require('./routes/checkOutLaterRouter');
 
 
 
@@ -64,6 +65,8 @@ app.use('/findBySkill', findSkillRouter);
 app.use('/notInterested', notInterestedRouter);
 
 app.use('/user', viewUserRouter);
+
+app.use('/checkOutLater', checkOutLaterRouter);
 
 app.use('/register', registerRouter);
 

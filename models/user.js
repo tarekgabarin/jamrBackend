@@ -112,8 +112,6 @@ let User = new Schema({
     checkOutLater: [],
 
 
-
-
     conversationHistories: [{
 
         conversationId: {
