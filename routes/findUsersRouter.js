@@ -18,6 +18,8 @@ router.get('/', authentication.verifyOrdinaryUser, (req, res, next) => {
 
         let ultimateIgnoreList = self.notInterested.concat(self.blockedUsers);
 
+
+
         User.find({
 
             loc: {
