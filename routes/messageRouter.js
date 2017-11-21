@@ -7,6 +7,8 @@ mongoose.Promise = Promise;
 const User = require('../models/user');
 const Conversation = require('../models/conversation');
 
+var io = require('socket.io');
+
 const Message = require('../models/message');
 
 const moment = require('moment');
@@ -25,12 +27,144 @@ function alphaOrder(arr) {
 
 }
 
+router.get('/inbox', authentication.verifyOrdinaryUser, (req, res) => {
+
+
+    User.findOne({username: req.decoded.username, creationDate: req.decoded}).then((user) => {
+
+
+        res.json(user.conversationHistories);
+
+
+    })
+
+
+});
+
+
+/// TODO when the user presses the message button, it should create the conversation document then return the conversationId
+
+router.post('/:username', authentication.verifyOrdinaryUser, (req, res) => {
+
+
+    User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate})
+
+        .then((self) => {
+
+
+            User.findOne({username: req.params.username}).then((other) => {
+
+                let selfCD = self.creationDate;
+
+                let otherCD = other.creationDate;
+
+                let conversationCD = (selfCD + otherCD) % 12;
+
+                let selfId = String(self._id);
+
+                let otherId = String(other._id);
+
+                let usersNamesArray = [self.username, other.username].sort();
+
+                let conversationData = [];
+
+                let selfObj = {
+
+                    creationDate: selfCD,
+
+                    userId: selfId,
+
+                    username: self.username
+
+                };
+
+                let otherObj = {
+                    creationDate: otherCD,
+
+                    userId: otherId,
+
+                    username: other.username
+
+
+                };
+
+                conversationData.push(selfObj);
+
+                conversationData.push(otherObj);
+
+                conversationData = alphaOrder(conversationData);
+
+                Conversation.findOne({
+                    //  participants: conversationData,
+                    usersNames: usersNamesArray,
+                    conversationCD: conversationCD
+                }).then(conversation => {
+
+
+                    if (!conversation) {
+
+                        Conversation.create({
+
+
+                            conversationCD: conversationCD,
+
+                            participants: conversationData,
+
+                            usersNames: usersNamesArray
+
+
+                        }).then((newConversation) => {
+
+                            res.json(newConversation);
+
+
+                        })
+
+
+                    }
+                    else {
+
+
+                        res.json(conversation)
+                    }
+
+
+                });
+
+
+            });
+
+
+        });
+
+
+});
+
+router.get('/:conversationId', authentication.verifyOrdinaryUser, (req, res) => {
+
+
+    Message.find({conversationId: req.params.conversationId}).then(messages => {
+
+
+        res.json(messages);
+
+    })
+
+
+
+});
+
 
 router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) => {
 
-    /// TODO I need to make sure that two messages have the same conversationId and that two conversationIds are not created
 
-    // TODO delete every document, then retest this
+
+
+    /// TODO have the api resend all the messages between the two people after message is created
+
+    // TODO set up the Socket for the route, it doesn't need to have the mongoose code embedded in it
+
+    // TODO it probably
 
     User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate}).then((self) => {
 
@@ -256,9 +390,9 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
 
                             let otherCheckOut = [];
 
-                            for (let i = 0; i < self.checkOutLater.length; i++){
+                            for (let i = 0; i < self.checkOutLater.length; i++) {
 
-                                if (self.checkOutLater[i] !== String(other._id)){
+                                if (self.checkOutLater[i] !== String(other._id)) {
 
                                     selfCheckOut.push(self.checkOutLater[i]);
 
@@ -298,9 +432,9 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
 
                             }
 
-                            for (let i = 0; i < other.checkOutLater.length; i++){
+                            for (let i = 0; i < other.checkOutLater.length; i++) {
 
-                                if (other.checkOutLater[i] !== String(self._id)){
+                                if (other.checkOutLater[i] !== String(self._id)) {
 
                                     otherCheckOut.push(other.checkOutLater[i]);
 
@@ -381,6 +515,8 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) =>
 
 
     });
+
+    //// add the then with the socket stuff there in a then statement after this semicolon (replace semicolon with .then(socket code)
 
 
 });

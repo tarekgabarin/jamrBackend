@@ -282,25 +282,29 @@ let User = new Schema({
 
         gender: {
 
-            type: Array
+            type: Array,
+            default: ['Male', "Female"]
 
         },
 
         lowestAge: {
 
-            type: Number
+            type: Number,
+            default: 18
 
         },
 
         highestAge: {
 
-            type: Number
+            type: Number,
+            default: 101
 
         },
 
         miles: {
 
-            type: Number
+            type: Number,
+            default: 100
         }
 
 

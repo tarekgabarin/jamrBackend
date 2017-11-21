@@ -8,6 +8,8 @@ let mongoose = require('mongoose');
 let config = require('./config/config');
 let bodyParser = require('body-parser');
 
+
+
 const messageRouter = require('./routes/messageRouter');
 
 const blockUserRouter = require('./routes/blockUserRouter');
@@ -39,6 +41,9 @@ const discoverRouter = require('./routes/discoveryRouter');
 let cors = require('cors');
 
 const app = express();
+
+let io = require('socket.io')(app);
+
 
 mongoose.connect(config.mongoUrl);
 

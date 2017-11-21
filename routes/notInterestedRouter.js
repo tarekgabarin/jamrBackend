@@ -17,10 +17,83 @@ router.post('/:userId', authentication.verifyOrdinaryUser, (req, res, next) => {
 
         self.notInterested.addToSet(req.params.userId);
 
-        self.save();
+        self.save().then(() => {
+
+            let ultimateIgnoreList = self.notInterested.concat(self.blockedUsers);
+
+            let radianDistance = self.discoveryPreferences.miles / 3963.2;
+
+            console.log('radianDistance is...' + radianDistance);
+
+            User.find({
+
+                _id: {
+
+                    $nin: ultimateIgnoreList
+
+                },
+
+                age: {
+
+                    $gte: self.discoveryPreferences.lowestAge,
+
+                    $lte: self.discoveryPreferences.highestAge
 
 
-    })
+                },
+
+                loc: {
+
+                    $nearSphere: {
+
+                        $geometry: {
+
+
+                            type: "Point",
+
+                            coordinates: req.decoded.loc.coordinates,
+
+                            $maxDistance: radianDistance
+
+
+                        },
+
+
+                    },
+
+
+                },
+
+                skills: {
+
+                    $in: [self.imLookingFor]
+
+
+                },
+
+                gender: {
+
+                    $in: self.discoveryPreferences.gender
+                },
+
+                iWantToMake: {
+
+                    $in: self.iWantToMake
+
+                }
+
+
+            }).then((users) => {
+
+                res.json(users)
+
+            });
+
+
+        });
+
+
+    });
 
 });
 
