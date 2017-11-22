@@ -9,6 +9,10 @@ let config = require('./config/config');
 let bodyParser = require('body-parser');
 
 
+let cors = require('cors');
+
+const app = express();
+
 
 const messageRouter = require('./routes/messageRouter');
 
@@ -38,11 +42,6 @@ const discoverRouter = require('./routes/discoveryRouter');
 
 
 
-let cors = require('cors');
-
-const app = express();
-
-let io = require('socket.io')(app);
 
 
 mongoose.connect(config.mongoUrl);
@@ -93,6 +92,27 @@ app.use('/find', findUsersRouter);
 
 
 
+
 const port = process.env.PORT || 3000;
-const server = http.createServer(app);
+const server = http.Server(app);
 server.listen(port);
+
+let io = require('socket.io')(server);
+
+const Message = require('./models/message');
+
+io.on('connection', function (socket) {
+
+    socket.on('message', function(conversationId){
+
+
+            Message({conversationId: conversationId}).then(messages => {
+
+                socket.emit('serverMessages', messages);
+
+            });
+
+
+    });
+
+});

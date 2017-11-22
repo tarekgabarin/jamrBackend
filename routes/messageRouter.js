@@ -7,7 +7,6 @@ mongoose.Promise = Promise;
 const User = require('../models/user');
 const Conversation = require('../models/conversation');
 
-var io = require('socket.io');
 
 const Message = require('../models/message');
 
@@ -41,67 +40,169 @@ router.get('/inbox', authentication.verifyOrdinaryUser, (req, res) => {
 
 });
 
-
-/// TODO when the user presses the message button, it should create the conversation document then return the conversationId
-
-router.post('/:username', authentication.verifyOrdinaryUser, (req, res) => {
-
+router.get('/:userId', authentication.verifyOrdinaryUser, (req, res) => {
 
     User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate})
 
-        .then((self) => {
+        .then(self => {
+
+            let verifyIfConversationExists = () => {
 
 
-            User.findOne({username: req.params.username}).then((other) => {
+                return new Promise((resolve, reject) => {
 
-                let selfCD = self.creationDate;
+                    let doesExist = undefined;
 
-                let otherCD = other.creationDate;
+                    let selfList = self.conversationHistories;
 
-                let conversationCD = (selfCD + otherCD) % 12;
+                    let conversationList = [];
 
-                let selfId = String(self._id);
+                    console.log('selfList is....' + selfList);
 
-                let otherId = String(other._id);
+                    for (var l = 0; l < selfList.length; l++) {
 
-                let usersNamesArray = [self.username, other.username].sort();
+                        if (selfList[l].respondentId === req.params.userId) {
 
-                let conversationData = [];
+                            conversationList.push(self.conversationHistories[l]);
+                            doesExist = true;
+                            break;
 
-                let selfObj = {
+                        }
 
-                    creationDate: selfCD,
+                    }
 
-                    userId: selfId,
+                    if ((l === self.conversationHistories.length) && conversationList.length === 0) {
 
-                    username: self.username
+                        resolve(conversationList)
 
-                };
+                    }
+                    else if (doesExist === true && conversationList.length > 0) {
 
-                let otherObj = {
-                    creationDate: otherCD,
+                        resolve(conversationList)
 
-                    userId: otherId,
-
-                    username: other.username
-
-
-                };
-
-                conversationData.push(selfObj);
-
-                conversationData.push(otherObj);
-
-                conversationData = alphaOrder(conversationData);
-
-                Conversation.findOne({
-                    //  participants: conversationData,
-                    usersNames: usersNamesArray,
-                    conversationCD: conversationCD
-                }).then(conversation => {
+                    }
 
 
-                    if (!conversation) {
+                    // let conversationList = self.conversationHistories.map(function(obj){
+                    //
+                    //     if (obj.respondentId === req.params.userId) {
+                    //
+                    //                 return obj;
+                    //
+                    //             }
+                    //
+                    // });
+
+                    // let conversationList = self.conversationHistories.filter(function (obj) {
+                    //     if (obj.respondentId === req.params.userId) {
+                    //
+                    //         return obj;
+                    //
+                    //     }
+                    // });
+
+                    /*console.log('conversationList is....' + conversationList.le);
+
+                    if (conversationList.length === 0) {
+
+                        doesExist = false
+
+                    }
+                    else if (conversationList.length === 1) {
+
+                        doesExist = true
+
+                    }
+
+                    if (doesExist !== undefined && conversationList !== undefined) {
+
+                        resolve(conversationList);
+
+                    }
+                    else {
+
+                        reject("verifyIfConvoExist did not run succesfully");
+
+                    }*/
+
+
+                    // for (let i = 0; i < conversationList.length; i++){
+                    //
+                    //     if (conversationList[i].respondentId === req.params.userId){
+                    //         respondedObj = conversationList[i];
+                    //         doesExist = true;
+                    //         break;
+                    //
+                    //
+                    //     }
+                    //
+                    //
+                    //
+                    // }
+                    //
+                    // if ()
+
+
+                })
+
+
+            };
+
+            verifyIfConversationExists().then((conversationList) => {
+
+                console.log('then callback,  conversationList is...' + conversationList);
+
+                if (conversationList.length === 0) {
+
+                    User.findById(req.params.userId).then(other => {
+
+                        let selfCD = self.creationDate;
+
+                        let otherCD = other.creationDate;
+
+                        let conversationCD = (selfCD + otherCD) % 12;
+
+                        let currentDate = moment().format('LL');
+
+                        let now = moment().format('LTS');
+
+                        let selfId = String(self._id);
+
+                        let otherId = String(other._id);
+
+                        let usersNamesArray = [self.username, other.username].sort();
+
+                        let conversationData = [];
+
+                        let selfObj = {
+
+                            creationDate: selfCD,
+
+                            userId: selfId,
+
+                            username: self.username,
+
+                            profilePic: self.profilePic
+
+                        };
+
+                        let otherObj = {
+                            creationDate: otherCD,
+
+                            userId: otherId,
+
+                            username: other.username,
+
+                            profilePic: other.profilePic
+
+
+                        };
+
+                        conversationData.push(selfObj);
+
+                        conversationData.push(otherObj);
+
+                        conversationData = alphaOrder(conversationData);
 
                         Conversation.create({
 
@@ -115,465 +216,206 @@ router.post('/:username', authentication.verifyOrdinaryUser, (req, res) => {
 
                         }).then((newConversation) => {
 
+                            let newEntryForSelf = {
+
+                                conversationId: String(newConversation._id),
+
+                                respondentId: String(other._id),
+
+                                respondentCD: otherCD,
+
+                                latestMessage: '',
+
+                                timeSent: now,
+
+                                dateSent: currentDate
+
+                            };
+
+                            let newEntryForOther = {
+
+                                conversationId: String(newConversation._id),
+
+                                respondentId: String(self._id),
+
+                                respondentCD: selfCD,
+
+                                latestMessage: '',
+
+                                timeSent: now,
+
+                                dateSent: currentDate
+
+
+                            };
+
+                            let newSelf = self.conversationHistories;
+
+                            if (newSelf.length === 0) {
+
+                                newSelf.push(newEntryForSelf)
+                            }
+                            else {
+
+                                for (let l = 0; l < newSelf.length; l++) {
+
+                                    if (newSelf[l].respondentId === String(other._id)) {
+
+                                        newSelf[l] = newEntryForSelf
+
+                                    }
+
+                                }
+                            }
+
+                            let newOther = other.conversationHistories;
+
+                            if (newOther.length === 0) {
+
+                                newOther.push(newEntryForOther)
+
+                            }
+                            else {
+
+
+                                for (let l = 0; newOther.length; l++) {
+
+                                    if (newOther[l].respondentId === String(self._id)) {
+
+                                        newOther[l] = newEntryForOther
+                                    }
+
+                                }
+                            }
+
+
+                            self.set('conversationHistories', newSelf);
+
+                            self.save();
+
+                            other.set('conversationHistories', newOther);
+
+                            other.save();
+
                             res.json(newConversation);
 
 
                         })
 
 
-                    }
-                    else {
+                    })
 
 
-                        res.json(conversation)
-                    }
+                }
+                else if (conversationList.length === 1) {
+
+                    console.log('else if runs');
 
 
-                });
+                    res.json(conversationList)
 
 
-            });
+                }
 
 
-        });
+            })
 
-
-});
-
-router.get('/:conversationId', authentication.verifyOrdinaryUser, (req, res) => {
-
-
-    Message.find({conversationId: req.params.conversationId}).then(messages => {
-
-
-        res.json(messages);
-
-    })
-
+        })
 
 
 });
 
 
-router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) => {
+router.post('/:userId', authentication.verifyOrdinaryUser, (req, res) => {
+
+
+    /* In the client I will have already have the conversationHistories by then which means I have
+
+
+        the conversationId
+
+        the participants
 
 
 
 
-    /// TODO have the api resend all the messages between the two people after message is created
 
-    // TODO set up the Socket for the route, it doesn't need to have the mongoose code embedded in it
+     */
 
-    // TODO it probably
-
-    User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate}).then((self) => {
+    console.log('req.decoded.username is...' + req.decoded.username);
 
 
-        User.findOne({username: req.params.username}).then((other) => {
+    User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate}).then(self => {
+
+        User.findById(req.params.userId).then(other => {
 
             let selfBlockedList = self.blockedBy;
 
             let otherBlockedByList = other.blockedUsers;
 
-            console.log('selfBlockedList is....' + selfBlockedList);
-
-            console.log('otherBockedByList is...' + otherBlockedByList);
-
             if ((selfBlockedList.indexOf(String(other._id)) === -1) && (otherBlockedByList.indexOf(String(self._id)) === -1)) {
-
-                let selfCD = self.creationDate;
-
-                let otherCD = other.creationDate;
-
-                let selfId = String(self._id);
-
-                let otherId = String(other._id);
-
-                let conversationCD = (selfCD + otherCD) % 12;
 
                 let currentDate = moment().format('LL');
 
-                let conversationData = [];
+                let now = moment().format('LTS');
 
-                let selfObj = {
+                let conversationList = self.conversationHistories.map(function (obj) {
 
-                    creationDate: selfCD,
+                    if (obj.respondentId === String(req.params.userId)) {
 
-                    userId: selfId,
-
-                    username: self.username
-
-                };
-
-                let otherObj = {
-                    creationDate: otherCD,
-
-                    userId: otherId,
-
-                    username: other.username
-
-
-                };
-
-                conversationData.push(selfObj);
-
-                conversationData.push(otherObj);
-
-                let usersNamesArray = [self.username, other.username].sort();
-
-                conversationData = alphaOrder(conversationData);
-
-                console.log('conversationData is..' + conversationData);
-
-                Conversation.findOne({
-                    //  participants: conversationData,
-                    usersNames: usersNamesArray,
-                    conversationCD: conversationCD
-                }).then((conversation) => {
-
-
-                    if (!conversation) {
-
-
-                        Conversation.create({
-
-
-                            conversationCD: conversationCD,
-
-                            participants: conversationData,
-
-                            usersNames: usersNamesArray
-
-
-                        })
-
-                            .then((newConversation) => {
-
-                                let now = moment().format('LTS');
-
-                                Message.create({
-
-                                    conversationId: newConversation._id,
-
-                                    conversationCD: conversationCD,
-
-                                    participants: conversationData,
-
-                                    sentBy: self._id,
-
-                                    sentTo: other._id,
-
-                                    messageSent: req.body.message,
-
-                                    sentAt: now,
-
-                                    dateOfMessage: currentDate
-
-                                }).then((message) => {
-
-
-                                    let newEntryForSelf = {
-
-                                        conversationId: message.conversationId,
-
-                                        respondentId: other._id,
-
-                                        respondentCD: otherCD,
-
-                                        latestMessage: message.messageSent,
-
-                                        timeSent: now,
-
-                                        dateSent: currentDate
-
-                                    };
-
-                                    let newEntryForOther = {
-
-                                        conversationId: message.conversationId,
-
-                                        respondentId: self._id,
-
-                                        respondentCD: selfCD,
-
-                                        latestMessage: message.messageSent,
-
-                                        timeSent: now,
-
-                                        dateSent: currentDate
-
-
-                                    };
-
-                                    self.conversationHistories.push(newEntryForSelf);
-
-                                    self.save();
-
-                                    other.conversationHistories.push(newEntryForOther);
-
-                                    other.save();
-
-                                    res.json(message);
-
-
-                                })
-
-
-                            })
-
+                        return obj
 
                     }
 
-                    else {
+                });
 
-                        let now = moment().format('LTS');
-
-                        Message.create({
-
-                            conversationId: conversation._id,
-
-                            conversationCD: conversationCD,
-
-                            participants: conversationData,
-
-                            sentBy: self._id,
-
-                            sentTo: other._id,
-
-                            messageSent: req.body.message,
-
-                            sentAt: now,
-
-                            dateOfMessage: currentDate
-
-                        }).then((message) => {
-
-                            // self.update({'conversationId': message.conversationId}, {
-                            //
-                            //
-                            //     '$set': {
-                            //
-                            //
-                            //         'conversationHistories.$.timeSent': now,
-                            //
-                            //         'conversationHistories.$.dateSent': currentDate,
-                            //
-                            //         'conversationHistories.$.latestMessage': String(req.body.message)
-                            //
-                            //
-                            //     }
-                            //
-                            //
-                            // });
+                console.log('conversationList is...' + conversationList);
 
 
-                            /// TODO why the F*&$# isn't this working? Deal with this bullshit later
+                let convoObj = conversationList[0].conversationId;
 
-                            /// THIS ONE WAS SUPPOSED TO BE THE MOST EFFICIENT WHY IT SUCK THO????
+                console.log('convoObj is...' + convoObj);
 
+                Conversation.findById(convoObj).then(Obj => {
 
-                            // let changeHistories = () => {
-                            //
-                            //     let selfHistories = self.conversationHistories;
-                            //
-                            //
-                            //
-                            //
-                            // };
+                    Message.create({
 
+                        conversationId: String(Obj._id),
 
-                            let selfHistories = self.conversationHistories;
+                        conversationCD: Obj.conversationCD,
 
-                            let otherHistories = other.conversationHistories;
+                        participants: Obj.participants,
 
-                            let selfCheckOut = [];
+                        sentBy: self._id,
 
-                            let otherCheckOut = [];
+                        sentTo: other._id,
 
-                            for (let i = 0; i < self.checkOutLater.length; i++) {
+                        messageSent: req.body.message,
 
-                                if (self.checkOutLater[i] !== String(other._id)) {
+                        sentAt: now,
 
-                                    selfCheckOut.push(self.checkOutLater[i]);
+                        dateOfMessage: currentDate
 
-                                }
+                    }).then((message) => {
 
-                            }
+                        console.log('message is...' + message);
 
-                            for (let i = 0; i < selfHistories.length; i++) {
+                        res.json(message.conversationId);
 
-                                if (selfHistories[i].conversationId === message.conversationId) {
-
-                                    selfHistories[i].timeSent = now;
-
-                                    selfHistories[i].dateSent = currentDate;
-
-                                    selfHistories[i].latestMessage = String(req.body.message);
-                                }
-
-                            }
-
-                            self.set('conversationHistories', selfHistories);
-
-                            self.set('checkOutLater', selfCheckOut);
-
-                            self.save();
-
-                            for (let i = 0; i < otherHistories.length; i++) {
-
-                                if (otherHistories[i].conversationId === message.conversationId) {
-
-                                    otherHistories[i].timeSent = now;
-
-                                    otherHistories[i].dateSent = currentDate;
-
-                                    otherHistories[i].latestMessage = String(req.body.message);
-                                }
-
-                            }
-
-                            for (let i = 0; i < other.checkOutLater.length; i++) {
-
-                                if (other.checkOutLater[i] !== String(self._id)) {
-
-                                    otherCheckOut.push(other.checkOutLater[i]);
-
-                                }
-
-                            }
-
-                            other.set('conversationHistories', otherHistories);
-
-                            other.set('checkOutLater', otherCheckOut);
-
-                            other.save();
+                    });
 
 
-                            // User.update({'conversationHistories.conversationId': message.conversationId}, {
-                            //
-                            //
-                            //     $set: {
-                            //
-                            //
-                            //         'conversationHistories.$.timeSent': now,
-                            //
-                            //         'conversationHistories.$.dateSent': currentDate,
-                            //
-                            //         'conversationHistories.$.latestMessage': String(req.body.message)
-                            //
-                            //
-                            //     }
-                            //
-                            //
-                            // });
+                });
 
-                            ///    User.save();
-
-                            ///      self.save();
-
-                            // other.update({'conversationHistories.conversationId': message.conversationId}, {
-                            //
-                            //
-                            //     '$set': {
-                            //
-                            //
-                            //         'conversationHistories.$.timeSent': now,
-                            //
-                            //         'conversationHistories.$.dateSent': currentDate,
-                            //
-                            //         'conversationHistories.$.latestMessage': String(req.body.message)
-                            //
-                            //
-                            //     }
-                            //
-                            //
-                            // });
-                            //
-                            // other.save();
-
-                            res.json(message);
-
-
-                        })
-
-
-                    }
-
-
-                })
 
             }
 
-            else if ((selfBlockedList.indexOf(String(other._id)) !== -1) && (otherBlockedByList.indexOf(String(self._id)) !== -1)) {
-
-                res.send('User has blocked you');
-
-            }
-
-
-        })
-
-
-    });
-
-    //// add the then with the socket stuff there in a then statement after this semicolon (replace semicolon with .then(socket code)
-
-
-});
-
-router.get('/:username', authentication.verifyOrdinaryUser, (req, res, next) => {
-
-    User.findById(req.decoded.id).then((self) => {
-
-        User.findOne({username: req.params.username}).then((other) => {
-
-            let checkConversationHistory = () => {
-
-
-                let conversationCD = (self.creationDate + other.creationDate) % 12
-
-
-                let dataObj = {};
-
-                return new Promise((resolve, reject) => {
-
-
-                    for (let i = 0; i < self.conversationHistories.length; i++) {
-
-                        if (self.conversationHistories[i].respondentId === String(other._id)) {
-                            dataObj.conversationId = self.conversationHistories[i].conversationId;
-                            dataObj.conversationCD = conversationCD;
-                            resolve(dataObj);
-
-                        }
-
-
-                    }
-
-
-                })
-
-            };
-
-            checkConversationHistory().then((dataObj) => {
-
-
-                Message.find({conversationId: dataObj.conversationId, conversationCD: dataObj.conversationCD})
-
-                    .then((messages) => {
-
-
-                        res.json(messages);
-
-                    })
-
-
-            });
 
         });
 
 
     });
+
 
 });
 

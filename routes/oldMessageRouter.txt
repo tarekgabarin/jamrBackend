@@ -1,0 +1,977 @@
+router.post('/:username', authentication.verifyOrdinaryUser, (req, res) => {
+
+
+    User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate})
+
+        .then((self) => {
+
+
+            User.findOne({username: req.params.username}).then((other) => {
+
+                let selfCD = self.creationDate;
+
+                let otherCD = other.creationDate;
+
+                let conversationCD = (selfCD + otherCD) % 12;
+
+                let selfId = String(self._id);
+
+                let otherId = String(other._id);
+
+                let usersNamesArray = [self.username, other.username].sort();
+
+                let conversationData = [];
+
+                let selfObj = {
+
+                    creationDate: selfCD,
+
+                    userId: selfId,
+
+                    username: self.username
+
+                };
+
+                let otherObj = {
+                    creationDate: otherCD,
+
+                    userId: otherId,
+
+                    username: other.username
+
+
+                };
+
+                conversationData.push(selfObj);
+
+                conversationData.push(otherObj);
+
+                conversationData = alphaOrder(conversationData);
+
+                Conversation.findOne({
+                    //  participants: conversationData,
+                    usersNames: usersNamesArray,
+                    conversationCD: conversationCD
+                }).then(conversation => {
+
+
+                    if (!conversation) {
+
+                        Conversation.create({
+
+
+                            conversationCD: conversationCD,
+
+                            participants: conversationData,
+
+                            usersNames: usersNamesArray
+
+
+                        }).then((newConversation) => {
+
+                            res.json(newConversation);
+
+
+                        })
+
+
+                    }
+                    else {
+
+
+                        res.json(conversation)
+                    }
+
+
+                });
+
+
+            });
+
+
+        });
+
+
+});
+
+
+
+
+
+/// TODO when the user presses the message button, it should create the conversation document then return the conversationId
+
+router.get('/:userId', authentication.verifyOrdinaryUser, (req, res) => {
+
+    User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate})
+
+        .then(self => {
+
+            let verifyIfConversationExists = () => {
+
+                let doesExist = undefined;
+
+
+
+                return new Promise((resolve, reject) => {
+
+                    let conversationList = self.conversationHistories.filter(function (obj) {
+                        if (obj.respondentId === req.params.userId){
+
+                            return obj;
+
+                        }
+                    });
+
+                    if (conversationList.length === 0){
+
+                        doesExist = false
+
+                    }
+                    else if (conversationList.length === 1){
+
+                        doesExist = true
+
+                    }
+
+                    if (doesExist !== undefined && conversationList !== undefined){
+
+                        resolve(conversationList);
+
+                    }
+                    else {
+
+                        reject("verifyIfConvoExist did not run succesfully");
+
+                    }
+
+
+                    // for (let i = 0; i < conversationList.length; i++){
+                    //
+                    //     if (conversationList[i].respondentId === req.params.userId){
+                    //         respondedObj = conversationList[i];
+                    //         doesExist = true;
+                    //         break;
+                    //
+                    //
+                    //     }
+                    //
+                    //
+                    //
+                    // }
+                    //
+                    // if ()
+
+
+
+                })
+
+
+
+            };
+
+            verifyIfConversationExists().then((conversationList) => {
+
+                if (conversationList.length === 0){
+
+                    User.findById(req.params.userId).then(other => {
+
+                        let selfCD = self.creationDate;
+
+                        let otherCD = other.creationDate;
+
+                        let conversationCD = (selfCD + otherCD) % 12;
+
+                        let selfId = String(self._id);
+
+                        let otherId = String(other._id);
+
+                        let usersNamesArray = [self.username, other.username].sort();
+
+                        let conversationData = [];
+
+                        let selfObj = {
+
+                            creationDate: selfCD,
+
+                            userId: selfId,
+
+                            username: self.username
+
+                        };
+
+                        let otherObj = {
+                            creationDate: otherCD,
+
+                            userId: otherId,
+
+                            username: other.username
+
+
+                        };
+
+                        conversationData.push(selfObj);
+
+                        conversationData.push(otherObj);
+
+                        conversationData = alphaOrder(conversationData);
+
+                        Conversation.create({
+
+
+                            conversationCD: conversationCD,
+
+                            participants: conversationData,
+
+                            usersNames: usersNamesArray
+
+
+                        }).then((newConversation) => {
+
+                            res.json(newConversation);
+
+
+                        })
+
+
+
+
+
+
+
+
+
+                    })
+
+
+
+
+                }
+                else if (conversationList.length === 1){
+
+
+                }
+
+
+
+            })
+
+        })
+
+
+
+
+})
+
+router.post('/:username', authentication.verifyOrdinaryUser, (req, res) => {
+
+
+    User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate})
+
+        .then((self) => {
+
+
+            User.findOne({username: req.params.username}).then((other) => {
+
+                let selfCD = self.creationDate;
+
+                let otherCD = other.creationDate;
+
+                let conversationCD = (selfCD + otherCD) % 12;
+
+                let selfId = String(self._id);
+
+                let otherId = String(other._id);
+
+                let usersNamesArray = [self.username, other.username].sort();
+
+                let conversationData = [];
+
+                let selfObj = {
+
+                    creationDate: selfCD,
+
+                    userId: selfId,
+
+                    username: self.username
+
+                };
+
+                let otherObj = {
+                    creationDate: otherCD,
+
+                    userId: otherId,
+
+                    username: other.username
+
+
+                };
+
+                conversationData.push(selfObj);
+
+                conversationData.push(otherObj);
+
+                conversationData = alphaOrder(conversationData);
+
+                Conversation.findOne({
+                    //  participants: conversationData,
+                    usersNames: usersNamesArray,
+                    conversationCD: conversationCD
+                }).then(conversation => {
+
+
+                    if (!conversation) {
+
+                        Conversation.create({
+
+
+                            conversationCD: conversationCD,
+
+                            participants: conversationData,
+
+                            usersNames: usersNamesArray
+
+
+                        }).then((newConversation) => {
+
+                            res.json(newConversation);
+
+
+                        })
+
+
+                    }
+                    else {
+
+
+                        res.json(conversation)
+                    }
+
+
+                });
+
+
+            });
+
+
+        });
+
+
+});
+
+router.get('/:conversationId', authentication.verifyOrdinaryUser, (req, res) => {
+
+
+    Message.find({conversationId: req.params.conversationId}).then(messages => {
+
+
+        res.json(messages);
+
+    })
+
+
+
+});
+
+
+router.post('/:username', authentication.verifyOrdinaryUser, (req, res, next) => {
+
+
+
+
+    /// TODO have the api resend all the messages between the two people after message is created
+
+    // TODO set up the Socket for the route, it doesn't need to have the mongoose code embedded in it
+
+    // TODO it probably
+
+    User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate}).then((self) => {
+
+
+        User.findOne({username: req.params.username}).then((other) => {
+
+            let selfBlockedList = self.blockedBy;
+
+            let otherBlockedByList = other.blockedUsers;
+
+            console.log('selfBlockedList is....' + selfBlockedList);
+
+            console.log('otherBockedByList is...' + otherBlockedByList);
+
+            if ((selfBlockedList.indexOf(String(other._id)) === -1) && (otherBlockedByList.indexOf(String(self._id)) === -1)) {
+
+                let selfCD = self.creationDate;
+
+                let otherCD = other.creationDate;
+
+                let selfId = String(self._id);
+
+                let otherId = String(other._id);
+
+                let conversationCD = (selfCD + otherCD) % 12;
+
+                let currentDate = moment().format('LL');
+
+                let conversationData = [];
+
+                let selfObj = {
+
+                    creationDate: selfCD,
+
+                    userId: selfId,
+
+                    username: self.username
+
+                };
+
+                let otherObj = {
+                    creationDate: otherCD,
+
+                    userId: otherId,
+
+                    username: other.username
+
+
+                };
+
+                conversationData.push(selfObj);
+
+                conversationData.push(otherObj);
+
+                let usersNamesArray = [self.username, other.username].sort();
+
+                conversationData = alphaOrder(conversationData);
+
+                console.log('conversationData is..' + conversationData);
+
+                Conversation.findOne({
+                    //  participants: conversationData,
+                    usersNames: usersNamesArray,
+                    conversationCD: conversationCD
+                }).then((conversation) => {
+
+
+                    if (!conversation) {
+
+
+                        Conversation.create({
+
+
+                            conversationCD: conversationCD,
+
+                            participants: conversationData,
+
+                            usersNames: usersNamesArray
+
+
+                        })
+
+                            .then((newConversation) => {
+
+                                let now = moment().format('LTS');
+
+                                Message.create({
+
+                                    conversationId: newConversation._id,
+
+                                    conversationCD: conversationCD,
+
+                                    participants: conversationData,
+
+                                    sentBy: self._id,
+
+                                    sentTo: other._id,
+
+                                    messageSent: req.body.message,
+
+                                    sentAt: now,
+
+                                    dateOfMessage: currentDate
+
+                                }).then((message) => {
+
+
+                                    let newEntryForSelf = {
+
+                                        conversationId: message.conversationId,
+
+                                        respondentId: other._id,
+
+                                        respondentCD: otherCD,
+
+                                        latestMessage: message.messageSent,
+
+                                        timeSent: now,
+
+                                        dateSent: currentDate
+
+                                    };
+
+                                    let newEntryForOther = {
+
+                                        conversationId: message.conversationId,
+
+                                        respondentId: self._id,
+
+                                        respondentCD: selfCD,
+
+                                        latestMessage: message.messageSent,
+
+                                        timeSent: now,
+
+                                        dateSent: currentDate
+
+
+                                    };
+
+                                    self.conversationHistories.push(newEntryForSelf);
+
+                                    self.save();
+
+                                    other.conversationHistories.push(newEntryForOther);
+
+                                    other.save();
+
+                                    res.json(message);
+
+
+                                })
+
+
+                            })
+
+
+                    }
+
+                    else {
+
+                        let now = moment().format('LTS');
+
+                        Message.create({
+
+                            conversationId: conversation._id,
+
+                            conversationCD: conversationCD,
+
+                            participants: conversationData,
+
+                            sentBy: self._id,
+
+                            sentTo: other._id,
+
+                            messageSent: req.body.message,
+
+                            sentAt: now,
+
+                            dateOfMessage: currentDate
+
+                        }).then((message) => {
+
+                            // self.update({'conversationId': message.conversationId}, {
+                            //
+                            //
+                            //     '$set': {
+                            //
+                            //
+                            //         'conversationHistories.$.timeSent': now,
+                            //
+                            //         'conversationHistories.$.dateSent': currentDate,
+                            //
+                            //         'conversationHistories.$.latestMessage': String(req.body.message)
+                            //
+                            //
+                            //     }
+                            //
+                            //
+                            // });
+
+
+                            /// TODO why the F*&$# isn't this working? Deal with this bullshit later
+
+                            /// THIS ONE WAS SUPPOSED TO BE THE MOST EFFICIENT WHY IT SUCK THO????
+
+
+                            // let changeHistories = () => {
+                            //
+                            //     let selfHistories = self.conversationHistories;
+                            //
+                            //
+                            //
+                            //
+                            // };
+
+
+                            let selfHistories = self.conversationHistories;
+
+                            let otherHistories = other.conversationHistories;
+
+                            let selfCheckOut = [];
+
+                            let otherCheckOut = [];
+
+                            for (let i = 0; i < self.checkOutLater.length; i++) {
+
+                                if (self.checkOutLater[i] !== String(other._id)) {
+
+                                    selfCheckOut.push(self.checkOutLater[i]);
+
+                                }
+
+                            }
+
+                            for (let i = 0; i < selfHistories.length; i++) {
+
+                                if (selfHistories[i].conversationId === message.conversationId) {
+
+                                    selfHistories[i].timeSent = now;
+
+                                    selfHistories[i].dateSent = currentDate;
+
+                                    selfHistories[i].latestMessage = String(req.body.message);
+                                }
+
+                            }
+
+                            self.set('conversationHistories', selfHistories);
+
+                            self.set('checkOutLater', selfCheckOut);
+
+                            self.save();
+
+                            for (let i = 0; i < otherHistories.length; i++) {
+
+                                if (otherHistories[i].conversationId === message.conversationId) {
+
+                                    otherHistories[i].timeSent = now;
+
+                                    otherHistories[i].dateSent = currentDate;
+
+                                    otherHistories[i].latestMessage = String(req.body.message);
+                                }
+
+                            }
+
+                            for (let i = 0; i < other.checkOutLater.length; i++) {
+
+                                if (other.checkOutLater[i] !== String(self._id)) {
+
+                                    otherCheckOut.push(other.checkOutLater[i]);
+
+                                }
+
+                            }
+
+                            other.set('conversationHistories', otherHistories);
+
+                            other.set('checkOutLater', otherCheckOut);
+
+                            other.save();
+
+
+                            // User.update({'conversationHistories.conversationId': message.conversationId}, {
+                            //
+                            //
+                            //     $set: {
+                            //
+                            //
+                            //         'conversationHistories.$.timeSent': now,
+                            //
+                            //         'conversationHistories.$.dateSent': currentDate,
+                            //
+                            //         'conversationHistories.$.latestMessage': String(req.body.message)
+                            //
+                            //
+                            //     }
+                            //
+                            //
+                            // });
+
+                            ///    User.save();
+
+                            ///      self.save();
+
+                            // other.update({'conversationHistories.conversationId': message.conversationId}, {
+                            //
+                            //
+                            //     '$set': {
+                            //
+                            //
+                            //         'conversationHistories.$.timeSent': now,
+                            //
+                            //         'conversationHistories.$.dateSent': currentDate,
+                            //
+                            //         'conversationHistories.$.latestMessage': String(req.body.message)
+                            //
+                            //
+                            //     }
+                            //
+                            //
+                            // });
+                            //
+                            // other.save();
+
+                            res.json(message);
+
+
+                        })
+
+
+                    }
+
+
+                })
+
+            }
+
+            else if ((selfBlockedList.indexOf(String(other._id)) !== -1) && (otherBlockedByList.indexOf(String(self._id)) !== -1)) {
+
+                res.send('User has blocked you');
+
+            }
+
+
+        })
+
+
+    });
+
+    //// add the then with the socket stuff there in a then statement after this semicolon (replace semicolon with .then(socket code)
+
+
+});
+
+router.get('/:username', authentication.verifyOrdinaryUser, (req, res, next) => {
+
+    User.findById(req.decoded.id).then((self) => {
+
+        User.findOne({username: req.params.username}).then((other) => {
+
+            let checkConversationHistory = () => {
+
+
+                let conversationCD = (self.creationDate + other.creationDate) % 12
+
+
+                let dataObj = {};
+
+                return new Promise((resolve, reject) => {
+
+
+                    for (let i = 0; i < self.conversationHistories.length; i++) {
+
+                        if (self.conversationHistories[i].respondentId === String(other._id)) {
+                            dataObj.conversationId = self.conversationHistories[i].conversationId;
+                            dataObj.conversationCD = conversationCD;
+                            resolve(dataObj);
+
+                        }
+
+
+                    }
+
+
+                })
+
+            };
+
+            checkConversationHistory().then((dataObj) => {
+
+
+                Message.find({conversationId: dataObj.conversationId, conversationCD: dataObj.conversationCD})
+
+                    .then((messages) => {
+
+
+                        res.json(messages);
+
+                    })
+
+
+            });
+
+        });
+
+
+    });
+
+});
+
+
+
+I don't need to update the conversation histories for this project here is the code where I misguidely thought so
+
+router.post('/:userId', authentication.verifyOrdinaryUser, (req, res) => {
+
+
+    /* In the client I will have already have the conversationHistories by then which means I have
+
+
+        the conversationId
+
+        the participants
+
+
+
+
+
+     */
+
+    console.log('req.decoded.username is...' + req.decoded.username);
+
+
+    User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate}).then(self => {
+
+        User.findById(req.params.userId).then(other => {
+
+            let selfBlockedList = self.blockedBy;
+
+            let otherBlockedByList = other.blockedUsers;
+
+            if ((selfBlockedList.indexOf(String(other._id)) === -1) && (otherBlockedByList.indexOf(String(self._id)) === -1)){
+
+                let currentDate = moment().format('LL');
+
+                let now = moment().format('LTS');
+
+                let conversationList = self.conversationHistories.map(function (obj) {
+
+                    if (obj.respondentId === String(req.params.userId)){
+
+                        return obj
+
+                    }
+
+                });
+
+
+                let convoObj = conversationList[0].conversationId;
+
+                Conversation.findById(convoObj).then(convoObj => {
+
+                    Message.create({
+
+                        conversationId: String(convoObj.conversationId),
+
+                        conversationCD: convoObj.conversationCD,
+
+                        participants: convoObj.participants,
+
+                        sentBy: self._id,
+
+                        sentTo: other._id,
+
+                        messageSent: req.body.message,
+
+                        sentAt: now,
+
+                        dateOfMessage: currentDate
+
+                    }).then((message) => {
+
+                        let newEntryForSelf = {
+
+                            conversationId: String(message.conversationId),
+
+                            respondentId: String(other._id),
+
+                            respondentCD: other.creationDate,
+
+                            latestMessage: message.messageSent,
+
+                            timeSent: now,
+
+                            dateSent: currentDate
+
+                        };
+
+                        let newEntryForOther = {
+
+                            conversationId: String(message.conversationId),
+
+                            respondentId: String(self._id),
+
+                            respondentCD: self.creationDate,
+
+                            latestMessage: message.messageSent,
+
+                            timeSent: now,
+
+                            dateSent: currentDate
+
+
+                        };
+
+                        let newSelf = self.conversationHistories;
+
+                        for (let l = 0; l < newSelf.length; l++){
+
+                            if (newSelf[l].respondentId === String(other._id)){
+
+                                newSelf[l].latestMessage = message.messageSent;
+
+                                newSelf[l].dateSent = currentDate;
+
+                                newSelf[l].timeSent = now
+
+                            }
+
+                        }
+
+                        let newOther = other.conversationHistories;
+
+                        for (let l = 0; newOther.length; l++){
+
+                            if(newOther[l].respondentId === String(self._id)){
+
+                                newOther[l].latestMessage = message.messageSent;
+
+                                newOther[l].dateSent = currentDate;
+
+                                newOther[l].timeSent = now
+                            }
+
+                        }
+
+
+
+                        self.set('conversationHistories', newSelf);
+
+                        self.save();
+
+                        other.set('conversationHistories', newOther);
+
+                        other.save();
+
+                        res.json(message.conversationId);
+
+                    });
+
+
+                })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+        });
+
+
+
+    });
+
+
+});

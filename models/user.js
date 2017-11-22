@@ -37,6 +37,14 @@ let User = new Schema({
 
     },
 
+    profilePic: {
+
+        type: String,
+        default: 'BLANK'
+
+
+    },
+
     username: {
 
         type: String,
@@ -136,10 +144,16 @@ let User = new Schema({
 
         },
 
+        respondentPic: {
+
+            type: String,
+            default: 'BLANK'
+
+        },
+
         latestMessage: {
 
-          type: String,
-          required: true
+          type: String
         },
 
         timeSent: {
@@ -266,7 +280,7 @@ let User = new Schema({
     country: {
 
         type: String,
-        required: true
+        default: 'Canada'
 
     },
 
