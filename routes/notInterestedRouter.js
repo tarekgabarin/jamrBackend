@@ -11,7 +11,7 @@ const router = express.Router();
 const mongodb = require('mongodb');
 const mongoose = require('mongoose');
 
-router.post('/:userId', authentication.verifyOrdinaryUser, (req, res, next) => {
+router.put('/:userId', authentication.verifyOrdinaryUser, (req, res, next) => {
 
     User.findOne({_id: req.decoded.id, creationDate: req.decoded.creationDate}).then((self) => {
 

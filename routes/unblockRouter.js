@@ -20,7 +20,7 @@ router.post('/:userId', authentication.verifyOrdinaryUser, (req, res, next) => {
 
             other.save();
 
-            res.send('User blocked');
+            res.send('user unblocked');
 
 
         })

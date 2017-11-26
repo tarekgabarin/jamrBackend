@@ -26,6 +26,8 @@ const findSkillRouter = require('./routes/findSkillRouter');
 
 const loginRouter = require('./routes/loginRouter');
 
+const uploadProfilePicRouter = require('./routes/uploadProfilePicRouter');
+
 const registerRouter = require('./routes/registerRouter');
 
 const findUsersRouter = require('./routes/findUsersRouter');
@@ -39,6 +41,12 @@ const checkOutSavedRouter = require('./routes/checkOutSavedRouter');
 const setDiscoveryPreferences = require('./routes/setDiscoveryPreferences');
 
 const discoverRouter = require('./routes/discoveryRouter');
+
+const updateInfoRouter = require('./routes/updateInfoRouter');
+
+const getMyInfo = require('./routes/getMyInfo');
+
+const demoFindAll = require('./routes/demoFindAll');
 
 
 
@@ -74,6 +82,10 @@ app.use('/findBySkill', findSkillRouter);
 
 app.use('/notInterested', notInterestedRouter);
 
+app.use('/upload', uploadProfilePicRouter);
+
+app.use('/update', updateInfoRouter);
+
 app.use('/user', viewUserRouter);
 
 app.use('/checkOutLater', checkOutLaterRouter);
@@ -90,10 +102,14 @@ app.use('/login', loginRouter);
 
 app.use('/find', findUsersRouter);
 
+app.use('/demoFind', demoFindAll);
+
+app.use('/getMyInfo', getMyInfo);
 
 
 
-const port = process.env.PORT || 3000;
+
+const port = process.env.PORT || 8080;
 const server = http.Server(app);
 server.listen(port);
 
@@ -106,7 +122,7 @@ io.on('connection', function (socket) {
     socket.on('message', function(conversationId){
 
 
-            Message({conversationId: conversationId}).then(messages => {
+            Message.find({conversationId: conversationId}).then(messages => {
 
                 socket.emit('serverMessages', messages);
 

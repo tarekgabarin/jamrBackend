@@ -4,10 +4,17 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/config');
 
 
+
+
+
+
+
 exports.verifyOrdinaryUser = function (req, res, next) {
     // check header or url parameters or post parameters for token
 
     let token =  req.header('x-auth');
+
+
 
     console.log('token is...' + token);
 

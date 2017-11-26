@@ -18,6 +18,10 @@ router.get('/', authentication.verifyOrdinaryUser, (req, res, next) => {
 
         let radianDistance = self.discoveryPreferences.miles / 3963.2;
 
+        console.log(self.imLookingFor);
+
+        console.log(self.iWantToMake);
+
         console.log('radianDistance is...' + radianDistance);
 
         User.find({
@@ -54,14 +58,7 @@ router.get('/', authentication.verifyOrdinaryUser, (req, res, next) => {
                     },
 
 
-                },
-
-
-            },
-
-            skills: {
-
-                $in: [self.imLookingFor]
+                }
 
 
             },
@@ -69,6 +66,13 @@ router.get('/', authentication.verifyOrdinaryUser, (req, res, next) => {
             gender: {
 
                 $in: self.discoveryPreferences.gender
+            },
+
+            skills: {
+
+                $in: self.imLookingFor
+
+
             },
 
             iWantToMake: {

@@ -20,6 +20,8 @@ router.post('/:userId', authentication.verifyOrdinaryUser, (req, res, next) => {
 
             other.save();
 
+            res.json(self);
+
 
 
 

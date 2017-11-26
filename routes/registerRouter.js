@@ -15,50 +15,12 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 mongoose.Promise = Promise;
 
-const AWS = require('aws-sdk');
-
 const generateToken = require('../controllers/generateToken');
-
-const multer = require('multer');
-
-const multerS3 = require('multer-s3');
-
-const accessKeyId = 'AKIAJM3IIBOYRVIZPZBQ';
-
-const secretAccessKey = '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';
-
-AWS.config.update({
-
-    accessKeyId: accessKeyId,
-    secretAccessKey: secretAccessKey,
-    region: "ca-central-1"
-
-});
-
-const fs = require('fs');
-
-const s3 = new AWS.S3();
-
-let upload = multer({
-
-    storage: multerS3({
-
-        s3: s3,
-
-        bucket: "jammr-app-bucket",
-
-        key: function (req, file, cb) {
-            console.log(file);
-            cb(null, Date.now().toString()); //use Date.now() for unique file keys
-        }
-    })
-
-});
 
 
 const User = require('../models/user');
 
-router.post('/', upload.single('file'), (req, res, next) => {
+router.post('/', (req, res, next) => {
 
 
     function formatStrings(str) {
@@ -156,7 +118,6 @@ router.post('/', upload.single('file'), (req, res, next) => {
 
                                 city: city,
 
-                                profilePic: String(req.file.location),
 
                                 country: country,
 
@@ -165,14 +126,6 @@ router.post('/', upload.single('file'), (req, res, next) => {
                                 provinceState: req.body.provinceState,
 
                                 iWantToMake: req.body.iWantToMake,
-
-                                youTubeLink: req.body.youTubeLink,
-
-                                deviantArtLink: req.body.deviantArtLink,
-
-                                itchIO: req.body.itchIO,
-
-                                gitHubLink: req.body.gitHubLink,
 
                                 imLookingFor: req.body.imLookingFor
 

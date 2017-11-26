@@ -8,8 +8,6 @@ const passport = require('passport');
 
 
 
-
-
 const Schema = mongoose.Schema;
 
 
@@ -40,7 +38,7 @@ let User = new Schema({
     profilePic: {
 
         type: String,
-        default: 'BLANK'
+        default: '../Generic-Avatar.png'
 
 
     },
@@ -89,12 +87,7 @@ let User = new Schema({
         type: Array
     },
 
-    profilePic: {
 
-        type: String,
-        default: 'BLANK'
-
-    },
 
     loc: {
 

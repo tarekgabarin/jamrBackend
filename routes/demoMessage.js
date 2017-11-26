@@ -26,23 +26,10 @@ function alphaOrder(arr) {
 
 }
 
-router.get('/inbox', authentication.verifyOrdinaryUser, (req, res) => {
 
+router.get('/:userId',  (req, res) => {
 
-    User.findOne({username: req.decoded.username, creationDate: req.decoded}).then((user) => {
-
-
-        res.json(user.conversationHistories);
-
-
-    })
-
-
-});
-
-router.get('/:userId', authentication.verifyOrdinaryUser, (req, res) => {
-
-    User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate})
+    User.findOne({username: req.body.username, creationDate: req.body.creationDate})
 
         .then(self => {
 
@@ -326,7 +313,8 @@ router.get('/:userId', authentication.verifyOrdinaryUser, (req, res) => {
 });
 
 
-router.post('/:userId', authentication.verifyOrdinaryUser, (req, res) => {
+
+router.post('/:userId', (req, res) => {
 
 
     /* In the client I will have already have the conversationHistories by then which means I have
@@ -342,10 +330,10 @@ router.post('/:userId', authentication.verifyOrdinaryUser, (req, res) => {
 
      */
 
-    console.log('req.decoded.username is...' + req.decoded.username);
+    console.log('req.decoded.username is...' + req.body.username);
 
 
-    User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate}).then(self => {
+    User.findOne({username: req.body.username, creationDate: req.body.creationDate}).then(self => {
 
         User.findById(req.params.userId).then(other => {
 

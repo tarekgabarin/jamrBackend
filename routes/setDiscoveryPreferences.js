@@ -9,7 +9,7 @@ const router = express.Router();
 const mongodb = require('mongodb');
 const mongoose = require('mongoose');
 
-router.post('/', authentication.verifyOrdinaryUser, (req, res, next) => {
+router.put('/', authentication.verifyOrdinaryUser, (req, res, next) => {
 
     let genderArr;
 
@@ -56,7 +56,9 @@ router.post('/', authentication.verifyOrdinaryUser, (req, res, next) => {
 
             }
 
-        }
+        },
+
+        {new: true}
     ).then((self) => {
 
         res.json(self)
