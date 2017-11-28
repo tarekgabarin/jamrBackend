@@ -71,7 +71,7 @@ router.get('/:userId', authentication.verifyOrdinaryUser, (req, res) => {
 
                     }
 
-                    if ((l === self.conversationHistories.length) && conversationList.length === 0) {
+                    if ((l === self.conversationHistories.length) || conversationList.length === 0) {
 
                         resolve(conversationList)
 
