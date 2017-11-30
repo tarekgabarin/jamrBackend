@@ -121,12 +121,30 @@ io.on('connection', function (socket) {
 
     socket.on('message', function(conversationId){
 
+            console.log('message event recieved by socket ', conversationId );
+
+
+        setInterval(function() {
 
             Message.find({conversationId: conversationId}).then(messages => {
+
+                console.log('sending messages on the backend', messages);
 
                 socket.emit('serverMessages', messages);
 
             });
+
+
+        }, 100);
+
+
+            // Message.find({conversationId: conversationId}).then(messages => {
+            //
+            //     console.log('sending messages on the backend', messages);
+            //
+            //     socket.emit('serverMessages', messages);
+            //
+            // });
 
 
     });

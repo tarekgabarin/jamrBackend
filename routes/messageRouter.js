@@ -257,15 +257,17 @@ router.get('/:userId', authentication.verifyOrdinaryUser, (req, res) => {
                             }
                             else {
 
-                                for (let l = 0; l < newSelf.length; l++) {
+                                newSelf.push(newEntryForSelf)
 
-                                    if (newSelf[l].respondentId === String(other._id)) {
-
-                                        newSelf[l] = newEntryForSelf
-
-                                    }
-
-                                }
+                                // for (let l = 0; l < newSelf.length; l++) {
+                                //
+                                //     if (newSelf[l].respondentId === String(other._id)) {
+                                //
+                                //         newSelf[l] = newEntryForSelf
+                                //
+                                //     }
+                                //
+                                // }
                             }
 
                             let newOther = other.conversationHistories;
@@ -277,15 +279,17 @@ router.get('/:userId', authentication.verifyOrdinaryUser, (req, res) => {
                             }
                             else {
 
+                                newOther.push(newEntryForOther)
 
-                                for (let l = 0; newOther.length; l++) {
 
-                                    if (newOther[l].respondentId === String(self._id)) {
-
-                                        newOther[l] = newEntryForOther
-                                    }
-
-                                }
+                                // for (let l = 0; newOther.length; l++) {
+                                //
+                                //     if (newOther[l].respondentId === String(self._id)) {
+                                //
+                                //         newOther[l] = newEntryForOther
+                                //     }
+                                //
+                                // }
                             }
 
 
@@ -297,7 +301,7 @@ router.get('/:userId', authentication.verifyOrdinaryUser, (req, res) => {
 
                             other.save();
 
-                            res.json(newConversation);
+                            res.json(newConversation._id);
 
 
                         })
@@ -312,7 +316,7 @@ router.get('/:userId', authentication.verifyOrdinaryUser, (req, res) => {
                     console.log('else if runs');
 
 
-                    res.json(conversationList)
+                    res.json(conversationList[0].conversationId)
 
 
                 }
@@ -353,21 +357,34 @@ router.post('/:userId', authentication.verifyOrdinaryUser, (req, res) => {
 
             let otherBlockedByList = other.blockedUsers;
 
+            let conversationList = [];
+
             if ((selfBlockedList.indexOf(String(other._id)) === -1) && (otherBlockedByList.indexOf(String(self._id)) === -1)) {
 
                 let currentDate = moment().format('LL');
 
                 let now = moment().format('LTS');
 
-                let conversationList = self.conversationHistories.map(function (obj) {
+                for (let i = 0; i < self.conversationHistories.length; i++){
 
-                    if (obj.respondentId === String(req.params.userId)) {
 
-                        return obj
+                    if (self.conversationHistories[i].respondentId === String(req.params.userId)){
+
+                        conversationList.push(self.conversationHistories[i]);
 
                     }
 
-                });
+                }
+
+                // let conversationList = self.conversationHistories.map(function (obj) {
+                //
+                //     if (obj.respondentId === String(req.params.userId)) {
+                //
+                //         return obj.conversationId
+                //
+                //     }
+                //
+                // });
 
                 console.log('conversationList is...' + conversationList);
 

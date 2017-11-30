@@ -85,6 +85,8 @@ router.put('/:userId', authentication.verifyOrdinaryUser, (req, res, next) => {
 
             }).then((users) => {
 
+                //// TODO do it also to update general people, do the messaging first then do this shit man, youreglkerjglekr
+
                 res.json(users)
 
             });
