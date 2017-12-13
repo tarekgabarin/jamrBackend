@@ -1,4 +1,4 @@
 module.exports = {
-    'secretKey': '98775-32431-31298-32132',
+    'secretKey': process.env.MY_SECRET_KEY,
     'mongoUrl' : process.env.MONGODB_URI
 };
