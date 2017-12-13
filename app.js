@@ -46,7 +46,7 @@ const updateInfoRouter = require('./routes/updateInfoRouter');
 
 const getMyInfo = require('./routes/getMyInfo');
 
-const demoFindAll = require('./routes/demoFindAll');
+
 
 
 
@@ -101,8 +101,6 @@ app.use('/register', registerRouter);
 app.use('/login', loginRouter);
 
 app.use('/find', findUsersRouter);
-
-app.use('/demoFind', demoFindAll);
 
 app.use('/getMyInfo', getMyInfo);
 
