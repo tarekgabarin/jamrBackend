@@ -8,7 +8,7 @@ const User = require('../models/user');
 router.get('/:email', (req, res) => {
 
 
-    User.findOne({email: req.params.email}).then(email => {
+    User.findOne({email: String(req.params.email)}).then(email => {
 
         if (!email) {
 

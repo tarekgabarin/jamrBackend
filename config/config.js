@@ -1,4 +1,4 @@
 module.exports = {
     'secretKey': process.env.MY_SECRET_KEY,
-    'mongoUrl' : process.env.MONGODB_URI
+    'mongoUrl' : 'mongodb://localhost/127.0.0.1/jammr'
 };
