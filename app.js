@@ -18,6 +18,8 @@ const messageRouter = require('./routes/messageRouter');
 
 const blockUserRouter = require('./routes/blockUserRouter');
 
+const checkEmailRouter = require('./routes/checkEmailRouter');
+
 const unblockRouter = require('./routes/unblockRouter');
 
 const viewUserRouter = require('./routes/viewUserRouter');
@@ -47,11 +49,6 @@ const updateInfoRouter = require('./routes/updateInfoRouter');
 const getMyInfo = require('./routes/getMyInfo');
 
 
-
-
-
-
-
 mongoose.connect(config.mongoUrl);
 
 let db = mongoose.connection;
@@ -77,6 +74,8 @@ app.use('/message', messageRouter);
 app.use('/block', blockUserRouter);
 
 app.use('/unblock', unblockRouter);
+
+app.use('/checkEmail', checkEmailRouter);
 
 app.use('/findBySkill', findSkillRouter);
 
