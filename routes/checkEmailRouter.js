@@ -10,19 +10,18 @@ router.get('/:email', (req, res) => {
 
     User.findOne({email: req.params.email}).then(email => {
 
-        if (email){
+        if (email) {
 
-            res.json('EMAIL_TAKEN')
+            res.json(email)
 
         }
-        else if (!email) {
-
-            res.json('EMAIL_AVAILABLE')
-        }
-
-
 
     })
+        .catch(err => {
+
+            if (err) throw err;
+
+        })
 
 
 });
