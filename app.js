@@ -48,6 +48,8 @@ const updateInfoRouter = require('./routes/updateInfoRouter');
 
 const getMyInfo = require('./routes/getMyInfo');
 
+const testing = require('./routes/testRouter');
+
 
 mongoose.connect(config.mongoUrl);
 
@@ -102,6 +104,8 @@ app.use('/login', loginRouter);
 app.use('/find', findUsersRouter);
 
 app.use('/getMyInfo', getMyInfo);
+
+app.use('/testing', testing);
 
 
 
