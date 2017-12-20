@@ -15,6 +15,11 @@ router.get('/:email', (req, res) => {
             res.json(email)
 
         }
+        else {
+
+            res.send('NULL')
+
+        }
 
     })
         .catch(err => {
