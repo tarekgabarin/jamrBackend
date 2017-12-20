@@ -10,14 +10,16 @@ router.get('/:email', (req, res) => {
 
     User.findOne({email: req.params.email}).then(email => {
 
-        if (email) {
+        if (!email) {
 
-            res.json(email)
+            res.send('NULL');
 
         }
         else {
 
-            res.send('NULL')
+            res.json(email);
+
+
 
         }
 
