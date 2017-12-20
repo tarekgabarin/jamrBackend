@@ -114,40 +114,40 @@ const port = process.env.PORT || 8080;
 const server = http.Server(app);
 server.listen(port);
 
-let io = require('socket.io')(server);
+// let io = require('socket.io')(server);
 
-const Message = require('./models/message');
+// const Message = require('./models/message');
 
-io.on('connection', function (socket) {
-
-    socket.on('message', function(conversationId){
-
-            console.log('message event recieved by socket ', conversationId );
-
-
-        setInterval(function() {
-
-            Message.find({conversationId: conversationId}).then(messages => {
-
-                console.log('sending messages on the backend', messages);
-
-                socket.emit('serverMessages', messages);
-
-            });
-
-
-        }, 100);
-
-
-            // Message.find({conversationId: conversationId}).then(messages => {
-            //
-            //     console.log('sending messages on the backend', messages);
-            //
-            //     socket.emit('serverMessages', messages);
-            //
-            // });
-
-
-    });
-
-});
+// io.on('connection', function (socket) {
+//
+//     socket.on('message', function(conversationId){
+//
+//             console.log('message event recieved by socket ', conversationId );
+//
+//
+//         setInterval(function() {
+//
+//             Message.find({conversationId: conversationId}).then(messages => {
+//
+//                 console.log('sending messages on the backend', messages);
+//
+//                 socket.emit('serverMessages', messages);
+//
+//             });
+//
+//
+//         }, 100);
+//
+//
+//             // Message.find({conversationId: conversationId}).then(messages => {
+//             //
+//             //     console.log('sending messages on the backend', messages);
+//             //
+//             //     socket.emit('serverMessages', messages);
+//             //
+//             // });
+//
+//
+//     });
+//
+// });
