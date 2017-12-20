@@ -12,12 +12,12 @@ router.get('/:email', (req, res) => {
 
         if (email){
 
-            res.send('EMAIL_TAKEN')
+            res.json('EMAIL_TAKEN')
 
         }
         else if (!email) {
 
-            res.send('EMAIL_AVAILABLE')
+            res.json('EMAIL_AVAILABLE')
         }
 
 
