@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9eefc76b-001c-4a02-b86e-b38ff40645d4" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/routes/checkEmailRouter.js" afterPath="$PROJECT_DIR$/routes/checkEmailRouter.js" />
-    </list>
+    <list default="true" id="9eefc76b-001c-4a02-b86e-b38ff40645d4" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -513,12 +510,12 @@
       <workItem from="1513196893233" duration="17000" />
       <workItem from="1513790260946" duration="863000" />
       <workItem from="1513794178416" duration="8890000" />
-      <workItem from="1513976586317" duration="28000" />
+      <workItem from="1513976586317" duration="531000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="239586000" />
+    <option name="totallyTimeSpent" value="240089000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
