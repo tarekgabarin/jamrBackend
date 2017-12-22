@@ -12,12 +12,12 @@ router.get('/:email', (req, res) => {
 
         if (!email) {
 
-            res.send('EMAIL_TAKEN');
+            res.send('EMAIL_AVAILABLE');
 
         }
         else {
 
-            res.send('EMAIL_AVAILABLE');
+            res.send('EMAIL_TAKEN');
 
 
 
