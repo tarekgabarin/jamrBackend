@@ -7,6 +7,7 @@ let path = require('path');
 let mongoose = require('mongoose');
 let config = require('./config/config');
 let bodyParser = require('body-parser');
+const proxy = require('http-proxy-middleware');
 
 
 let cors = require('cors');
@@ -69,10 +70,12 @@ db.once('open', function () {
 });
 
 
+
 // app.use(cors());
 //
 // app.options('*', cors());
 
+app.use('/', proxy({target: "https://jammr-backend.herokuapp.com", changeOrigin: true}));
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", '*');
