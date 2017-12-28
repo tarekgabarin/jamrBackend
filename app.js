@@ -70,15 +70,6 @@ db.once('open', function () {
 });
 
 
-// Tried this approach, but didn't work
-
-// app.use(cors());
-//
-// app.options('*', cors());
-
-
-//// With this approach, I at least got past the stupid 503 crap
-
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", '*');
@@ -90,22 +81,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-/// Tried proxying the server, but I still got 503 status error
 
-// app.use('/api', httpProxy({
-//     target       : "https://jammr-backend.herokuapp.com",
-//     changeOrigin : true,
-//     onProxyReq   : function (proxyReq, req, res) {
-//         // Browers may send Origin headers even with same-origin
-//         // requests. To prevent CORS issues, we have to change
-//         // the Origin to match the target URL.
-//         if (proxyReq.getHeader('origin')) {
-//             proxyReq.setHeader('origin', "https://jammr-backend.herokuapp.com");
-//         }
-//     }
-// }));
-
-////app.use('/api', proxy({target: "https://jammr-backend.herokuapp.com", changeOrigin: true}));
 
 app.use(morgan('combined'));
 
