@@ -74,21 +74,18 @@ app.use(morgan('combined'));
 //
 // app.options('*', cors());
 
-app.configure(function () {
 
-    app.use(function(req, res, next) {
-        res.header("Access-Control-Allow-Origin", '*');
-        res.header("Access-Control-Allow-Credentials", true);
-        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-        res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,x-auth,Accept,content-type,application/json');
-        next();
-    });
-
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", '*');
+    res.header("Access-Control-Allow-Credentials", true);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,x-auth,Accept,content-type,application/json');
+    next();
 });
 
 
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({extended: false, limit: '50mb'}));
 
 app.use('/message', messageRouter);
 
@@ -127,8 +124,6 @@ app.use('/getMyInfo', getMyInfo);
 app.use('/testing', testing);
 
 
-
-
 const port = process.env.PORT || 8080;
 const server = http.Server(app);
 server.listen(port);
@@ -139,12 +134,12 @@ const Message = require('./models/message');
 
 io.on('connection', function (socket) {
 
-    socket.on('message', function(conversationId){
+    socket.on('message', function (conversationId) {
 
-            console.log('message event recieved by socket ', conversationId );
+        console.log('message event recieved by socket ', conversationId);
 
 
-        setInterval(function() {
+        setInterval(function () {
 
             Message.find({conversationId: conversationId}).then(messages => {
 
@@ -158,13 +153,13 @@ io.on('connection', function (socket) {
         }, 100);
 
 
-            // Message.find({conversationId: conversationId}).then(messages => {
-            //
-            //     console.log('sending messages on the backend', messages);
-            //
-            //     socket.emit('serverMessages', messages);
-            //
-            // });
+        // Message.find({conversationId: conversationId}).then(messages => {
+        //
+        //     console.log('sending messages on the backend', messages);
+        //
+        //     socket.emit('serverMessages', messages);
+        //
+        // });
 
 
     });
