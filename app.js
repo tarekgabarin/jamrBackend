@@ -87,7 +87,26 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use('/api', proxy({target: "https://jammr-backend.herokuapp.com", changeOrigin: true}));
+app.use('/api', httpProxy({
+    logLevel     : 'debug',
+    target       : "https://jammr-backend.herokuapp.com",
+    changeOrigin : true,
+    secure       : true,
+    xfwd         : true,
+    router: {
+        '/api/auth/login': `${API_SERVER}/auth/login`
+    },
+    onProxyReq   : function (proxyReq, req, res) {
+        // Browers may send Origin headers even with same-origin
+        // requests. To prevent CORS issues, we have to change
+        // the Origin to match the target URL.
+        if (proxyReq.getHeader('origin')) {
+            proxyReq.setHeader('origin', "https://jammr-backend.herokuapp.com");
+        }
+    }
+}));
+
+////app.use('/api', proxy({target: "https://jammr-backend.herokuapp.com", changeOrigin: true}));
 
 app.use(morgan('combined'));
 
