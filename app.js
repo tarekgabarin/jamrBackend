@@ -75,7 +75,7 @@ db.once('open', function () {
 //
 // app.options('*', cors());
 
-app.use('/', proxy({target: "https://jammr-backend.herokuapp.com", changeOrigin: true}));
+
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", '*');
@@ -86,6 +86,8 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, X-Auth, X- Requested-With, Content-Type, Accept");
     next();
 });
+
+app.use('/', proxy({target: "https://jammr-backend.herokuapp.com", changeOrigin: true}));
 
 app.use(morgan('combined'));
 
