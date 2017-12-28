@@ -50,11 +50,11 @@ const getMyInfo = require('./routes/getMyInfo');
 
 const testing = require('./routes/testRouter');
 
-const corsOptions = {
-
-    origin: ['http://localhost:3000']
-
-};
+// const corsOptions = {
+//
+//     origin: ['http://localhost:3000']
+//
+// };
 
 
 mongoose.connect(config.mongoUrl);
@@ -70,9 +70,9 @@ db.once('open', function () {
 
 app.use(morgan('combined'));
 
-app.use(cors(corsOptions));
+app.use(cors());
 
-app.options('*', cors(corsOptions));
+app.options('*', cors());
 
 // app.use(function(req, res, next) {
 //     res.header("Access-Control-Allow-Origin", "*");
