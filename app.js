@@ -7,7 +7,7 @@ let path = require('path');
 let mongoose = require('mongoose');
 let config = require('./config/config');
 let bodyParser = require('body-parser');
-const proxy = require('http-proxy-middleware');
+
 
 
 let cors = require('cors');
@@ -86,7 +86,7 @@ app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
     ///res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,X-Auth,Accept,content-type,application/json');
 
-    res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin, X-Auth, X- Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Origin,X-Auth,X-Requested-With,Content-Type,Accept,content-type,application/json,x-auth");
     next();
 });
 
