@@ -145,6 +145,13 @@ router.post('/', (req, res, next) => {
 
                                 })
 
+                                .catch(err => {
+
+                                    if (err) return next(err)
+
+
+                                })
+
 
                         })
 
