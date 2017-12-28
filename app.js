@@ -52,7 +52,7 @@ const testing = require('./routes/testRouter');
 
 const corsOptions = {
 
-    origin: [process.env.UR, 'http://localhost:3000']
+    origin: ['http://localhost:3000']
 
 };
 
