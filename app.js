@@ -86,7 +86,7 @@ app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
     ///res.header("Access-Control-Allow-Headers", 'Origin,X-Requested-With,Content-Type,X-Auth,Accept,content-type,application/json');
 
-    res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Origin,X-Auth,X-Requested-With,Content-Type,Accept,content-type,application/json,x-auth,Access-Control-Request-Method,Access-Control-Request-Headers");
+ ////   res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Origin,Origin,X-Auth,X-Requested-With,Content-Type,Accept,content-type,application/json,x-auth,Access-Control-Request-Method,Access-Control-Request-Headers");
     next();
 });
 
