@@ -87,7 +87,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use('/', proxy({target: "https://jammr-backend.herokuapp.com", changeOrigin: true}));
+app.use('/api', proxy({target: "https://jammr-backend.herokuapp.com", changeOrigin: true}));
 
 app.use(morgan('combined'));
 
