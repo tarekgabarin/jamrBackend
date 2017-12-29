@@ -125,9 +125,9 @@ router.post('/', (req, res, next) => {
                                     coordinates: [response.location.lng, response.location.lat]
                                 },
 
-                                city: city,
+                                city: req.body.city,
 
-                                street: street,
+                                street: req.body.street,
 
                                 provinceState: req.body.provinceState,
 
