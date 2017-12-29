@@ -23,25 +23,28 @@ const User = require('../models/user');
 router.post('/', (req, res, next) => {
 
 
-    function formatStrings(str) {
-
-        str = str.split('');
-
-        for (let i = 0; i < str.length; i++) {
-
-            if (str[i] === ' ') {
-
-                str[i] = '+';
-
-            }
-        }
-
-        return str.join('');
-    }
-
-    let street = formatStrings(req.body.street);
-
-    let city = formatStrings(req.body.city);
+    // function formatStrings(str) {
+    //
+    //     str = str.split('');
+    //
+    //     console.log(str);
+    //
+    //     for (let i = 0; i < str.length; i++) {
+    //
+    //         if (str[i] === ' ') {
+    //
+    //             str[i] = '+';
+    //
+    //         }
+    //     }
+    //
+    //
+    //     return str.join('');
+    // }
+    //
+    // let street = formatStrings(req.body.street);
+    //
+    // let city = formatStrings(req.body.city);
 
     console.log(req.body.city);
 
