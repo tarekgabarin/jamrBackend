@@ -39,13 +39,17 @@ router.post('/', (req, res, next) => {
         return str.join('');
     }
 
-    let street = formatStrings(String(req.body.street));
+    let street = formatStrings(req.body.street);
 
-    let city = formatStrings(String(req.body.city));
+    let city = formatStrings(req.body.city);
 
     console.log(req.body.city);
 
     console.log(req.body.street);
+
+    console.log("below is req.body...");
+
+    console.log(req.body);
 
     const address = `https://maps.googleapis.com/maps/api/geocode/json?address=${street}, +${city}, +CA&key=AIzaSyCZGDHMtmb2WAoZG1VukVSumsjz9kNGJOw`;
 
