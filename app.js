@@ -74,6 +74,9 @@ db.once('open', function () {
 
 // app.use(cors);
 
+
+//  This bloody didn't work either
+
 app.options('*', cors());
 
 
