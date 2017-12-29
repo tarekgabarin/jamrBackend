@@ -8,7 +8,7 @@ let mongoose = require('mongoose');
 let config = require('./config/config');
 let bodyParser = require('body-parser');
 
-import proxy from 'http-proxy-middleware';
+////import proxy from 'http-proxy-middleware';
 
 let cors = require('cors');
 
