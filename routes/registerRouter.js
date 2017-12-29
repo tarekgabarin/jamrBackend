@@ -43,9 +43,7 @@ router.post('/', (req, res, next) => {
 
     let city = formatStrings(String(req.body.city));
 
-    let country = String(req.body.country);
-
-    const address = `https://maps.googleapis.com/maps/api/geocode/json?address=${street}, +${city}, +${country}&key=AIzaSyCZGDHMtmb2WAoZG1VukVSumsjz9kNGJOw`;
+    const address = `https://maps.googleapis.com/maps/api/geocode/json?address=${street}, +${city}, +CA&key=AIzaSyCZGDHMtmb2WAoZG1VukVSumsjz9kNGJOw`;
 
     let getSrc = () => {
 
@@ -78,7 +76,7 @@ router.post('/', (req, res, next) => {
 
                     bcrypt.genSalt(10, function (err, salt) {
 
-                       // if (err) throw err;
+                        if (err) throw err;
 
                         bcrypt.hash(password, salt, function (err, hash) {
 
