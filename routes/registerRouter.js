@@ -78,11 +78,11 @@ router.post('/', (req, res, next) => {
 
                     bcrypt.genSalt(10, function (err, salt) {
 
-                        if (err) throw err;
+                       // if (err) throw err;
 
                         bcrypt.hash(password, salt, function (err, hash) {
 
-                            if (err) throw err;
+                           /// if (err) throw err;
 
 
                             let userName = `${req.body.firstName}_${req.body.lastName}`;
@@ -147,7 +147,7 @@ router.post('/', (req, res, next) => {
 
                                 .catch(err => {
 
-                                    if (err) return next(err)
+                                    if (err) return res(err)
 
 
                                 })
@@ -158,6 +158,11 @@ router.post('/', (req, res, next) => {
 
                     })
 
+
+                }
+                else {
+
+                    res.send('USER ALREADY EXISTS')
 
                 }
 

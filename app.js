@@ -8,7 +8,7 @@ let mongoose = require('mongoose');
 let config = require('./config/config');
 let bodyParser = require('body-parser');
 
-////import proxy from 'http-proxy-middleware';
+const proxy = require('http-proxy-middleware');
 
 let cors = require('cors');
 
@@ -92,21 +92,21 @@ app.use(function (req, res, next) {
 
 /// Tried this, but it failed
 
-// let options = {
-//
-//     target: "https://jammr-backend.herokuapp.com",
-//
-//     changeOrigin: true,
-//     logLevel: "debug",
-//
-//     onError: function onError(err, req, res) {
-//         console.log("Something went wrong with the proxy middleware.", err);
-//         res.end();
-//     }
-//
-// };
-//
-// app.use('/api', proxy(options));
+let options = {
+
+    target: "https://jammr-backend.herokuapp.com",
+
+    changeOrigin: true,
+    logLevel: "debug",
+
+    onError: function onError(err, req, res) {
+        console.log("Something went wrong with the proxy middleware.", err);
+        res.end();
+    }
+
+};
+
+app.use('/api', proxy(options));
 
 
 
