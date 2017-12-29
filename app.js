@@ -79,21 +79,7 @@ db.once('open', function () {
 
 // app.options('*', cors());
 
-let options = {
 
-    target: "https://jammr-backend.herokuapp.com",
-
-    changeOrigin: true,
-    logLevel: "debug",
-
-    onError: function onError(err, req, res) {
-        console.log("Something went wrong with the proxy middleware.", err);
-        res.end();
-    }
-
-};
-
-app.use('/api', proxy(options));
 
 
 app.use(function (req, res, next) {
@@ -103,6 +89,24 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Origin,X-Auth,X-Requested-With,Content-Type,Accept,content-type,application/json,x-auth,Access-Control-Request-Method,Access-Control-Request-Headers");
     next();
 });
+
+/// Tried this, but it failed
+
+// let options = {
+//
+//     target: "https://jammr-backend.herokuapp.com",
+//
+//     changeOrigin: true,
+//     logLevel: "debug",
+//
+//     onError: function onError(err, req, res) {
+//         console.log("Something went wrong with the proxy middleware.", err);
+//         res.end();
+//     }
+//
+// };
+//
+// app.use('/api', proxy(options));
 
 
 
