@@ -116,9 +116,6 @@ router.post('/', (req, res, next) => {
 
                                 city: city,
 
-
-                                country: country,
-
                                 street: street,
 
                                 provinceState: req.body.provinceState,
