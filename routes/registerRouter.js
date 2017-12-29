@@ -43,6 +43,10 @@ router.post('/', (req, res, next) => {
 
     let city = formatStrings(String(req.body.city));
 
+    console.log(req.body.city);
+
+    console.log(req.body.street);
+
     const address = `https://maps.googleapis.com/maps/api/geocode/json?address=${street}, +${city}, +CA&key=AIzaSyCZGDHMtmb2WAoZG1VukVSumsjz9kNGJOw`;
 
     let getSrc = () => {
