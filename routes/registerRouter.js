@@ -38,6 +38,9 @@ router.post('/', (req, res, next) => {
             }
         }
 
+        console.log("below is str.join('')....");
+
+        console.log(str.join(''));
 
         return str.join('');
     }
@@ -46,11 +49,19 @@ router.post('/', (req, res, next) => {
 
     let city = formatStrings(req.body.city);
 
+    console.log('below are req.body.city and req.body.street.....');
+
     console.log(req.body.city);
 
     console.log(req.body.street);
 
-    console.log("below is req.body...");
+    console.log('Below are street and city from formattedStrings');
+
+    console.log(street);
+
+    console.log(city);
+
+    // console.log("below is req.body...");
 
    /// console.log(req.body);
 
@@ -125,9 +136,9 @@ router.post('/', (req, res, next) => {
                                     coordinates: [response.location.lng, response.location.lat]
                                 },
 
-                                city: req.body.city,
+                                city: city,
 
-                                street: req.body.street,
+                                street: street,
 
                                 provinceState: req.body.provinceState,
 
@@ -139,6 +150,8 @@ router.post('/', (req, res, next) => {
                             })
 
                                 .then((user) => {
+
+                                    console.log('then of User.create running!');
 
 
                                     let userToken = generateToken.generateUserToken(user);
@@ -153,7 +166,7 @@ router.post('/', (req, res, next) => {
 
                                 .catch(err => {
 
-                                    if (err) return res(err)
+                                    if (err) console.log(err)
 
 
                                 })
