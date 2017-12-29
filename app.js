@@ -70,18 +70,6 @@ db.once('open', function () {
 });
 
 
-/// This doesn't bloody work
-
-// app.use(cors);
-
-
-//  This bloody didn't work either
-
-// app.options('*', cors());
-
-
-
-
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", '*');
     res.header("Access-Control-Allow-Credentials", true);
@@ -89,26 +77,6 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Origin,X-Auth,X-Requested-With,Content-Type,Accept,content-type,application/json,x-auth,Access-Control-Request-Method,Access-Control-Request-Headers");
     next();
 });
-
-/// Tried this, but it failed
-
-// let options = {
-//
-//     target: "https://jammr-backend.herokuapp.com",
-//
-//     changeOrigin: true,
-//     logLevel: "debug",
-//
-//     onError: function onError(err, req, res) {
-//         console.log("Something went wrong with the proxy middleware.", err);
-//         res.end();
-//     }
-//
-// };
-//
-// app.use('/api', proxy(options));
-
-
 
 
 app.use(morgan('combined'));
