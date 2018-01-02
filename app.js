@@ -19,6 +19,8 @@ const messageRouter = require('./routes/messageRouter');
 
 const blockUserRouter = require('./routes/blockUserRouter');
 
+const checkPasswordRouter = ('./routes/checkPasswordRouter');
+
 const checkEmailRouter = require('./routes/checkEmailRouter');
 
 const unblockRouter = require('./routes/unblockRouter');
@@ -50,6 +52,7 @@ const updateInfoRouter = require('./routes/updateInfoRouter');
 const getMyInfo = require('./routes/getMyInfo');
 
 const testing = require('./routes/testRouter');
+
 
 // const corsOptions = {
 //
@@ -89,6 +92,8 @@ app.use('/message', messageRouter);
 app.use('/block', blockUserRouter);
 
 app.use('/unblock', unblockRouter);
+
+app.use('/checkPasswordRouter', checkPasswordRouter);
 
 app.use('/checkEmail', checkEmailRouter);
 
