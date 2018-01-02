@@ -19,7 +19,7 @@ const messageRouter = require('./routes/messageRouter');
 
 const blockUserRouter = require('./routes/blockUserRouter');
 
-const checkPasswordRouter = ('./routes/checkPasswordRouter');
+const checkPasswordRouter = require('./routes/checkPasswordRouter');
 
 const checkEmailRouter = require('./routes/checkEmailRouter');
 
