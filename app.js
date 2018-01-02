@@ -93,7 +93,7 @@ app.use('/block', blockUserRouter);
 
 app.use('/unblock', unblockRouter);
 
-app.use('/checkPasswordRouter', checkPasswordRouter);
+app.use('/checkPassword', checkPasswordRouter);
 
 app.use('/checkEmail', checkEmailRouter);
 
