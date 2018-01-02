@@ -5,19 +5,25 @@ const mongoose = require('mongoose');
 mongoose.Promise = Promise;
 const User = require('../models/user');
 
+const bcrypt = require('bcryptjs');
+
 router.post('/',  (req, res, next) => {
 
     User.findOne({email: req.body.email}).then((user) => {
 
-        user.passwordComparison(req.body.password, function(err, doesMatch){
-            if (err){return done(err)}
+        bcrypt.compare(req.body.password, user.password, function (err, result) {
 
-            if (doesMatch){
-                res.send('PASSWORD_CORRECT')
+            if (result === true){
+
+                res.send('CORRECT_PASSWORD');
+
             }
-            else {
-                res.send('PASSWORD_INCORRECT')
+            else if (result === false){
+
+                res.send('INCORRECT_PASSWORD');
+
             }
+            
         })
 
 
