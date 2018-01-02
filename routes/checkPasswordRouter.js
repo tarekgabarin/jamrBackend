@@ -13,7 +13,7 @@ router.post('/',  (req, res, next) => {
 
         bcrypt.compare(req.body.password, user.password, function (err, result) {
 
-            if (err) throw err;
+            if (err) console.log(err);
 
             if (result === true){
 
@@ -32,7 +32,7 @@ router.post('/',  (req, res, next) => {
 
     }).catch(err => {
 
-        if (err) throw err;
+        if (err) console.log(err);
 
     })
 
