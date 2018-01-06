@@ -7,7 +7,7 @@ const User = require('../models/user');
 
 const authentication = require('../controllers/authentication');
 
-router.get('getPic', authentication.verifyOrdinaryUser, (req, res, next) => {
+router.get('/', authentication.verifyOrdinaryUser, (req, res, next) => {
 
     User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate})
 
