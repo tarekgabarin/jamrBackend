@@ -125,7 +125,7 @@ app.use('/find', findUsersRouter);
 
 app.use('/getMyInfo', getMyInfo);
 
-app.use('getPic', getPicRouter);
+app.use('/getPic', getPicRouter);
 
 app.use('/testing', testing);
 

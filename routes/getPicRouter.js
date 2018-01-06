@@ -9,7 +9,7 @@ const authentication = require('../controllers/authentication');
 
 router.get('/', authentication.verifyOrdinaryUser, (req, res, next) => {
 
-    User.findOne({username: req.decoded.username, creationDate: req.decoded.creationDate})
+    User.findOne({username: req.decoded.username})
 
         .then(user => {
 
