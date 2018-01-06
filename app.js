@@ -51,6 +51,8 @@ const updateInfoRouter = require('./routes/updateInfoRouter');
 
 const getMyInfo = require('./routes/getMyInfo');
 
+const getPicRouter = require('./routes/getPicRouter');
+
 const testing = require('./routes/testRouter');
 
 
@@ -122,6 +124,8 @@ app.use('/login', loginRouter);
 app.use('/find', findUsersRouter);
 
 app.use('/getMyInfo', getMyInfo);
+
+app.use('getPic', getPicRouter);
 
 app.use('/testing', testing);
 
