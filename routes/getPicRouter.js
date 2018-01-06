@@ -20,7 +20,7 @@ router.get('/', authentication.verifyOrdinaryUser, (req, res, next) => {
 
         .catch(err => {
 
-            if (err) throw err
+            if (err) console.log(err)
 
         })
 
